@@ -5,7 +5,7 @@ See https://stedolan.github.io/jq/download/
 
 ## Update stats
 
-Run `./catalog/scrape_data.sh`
+Run `./scrape_data.sh`
 
 ## Add a new ruleset
 
