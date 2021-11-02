@@ -6,7 +6,7 @@
 set -o errexit -o pipefail -o nounset
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-GH_TOKEN=${GH_TOKEN:-error you must set a github token}
+: ${GH_TOKEN:-error you must set a github token}
 
 function ghapi() {
     curl 2>/dev/null \
