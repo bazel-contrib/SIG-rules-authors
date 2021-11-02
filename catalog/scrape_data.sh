@@ -8,11 +8,6 @@ set -o errexit -o pipefail -o nounset
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 GH_TOKEN=${GH_TOKEN:-error you must set a github token}
 
-function debug() {
-    # echo $@
-    true
-}
-
 function ghapi() {
     curl 2>/dev/null \
         -u "$USER:$GH_TOKEN" \
