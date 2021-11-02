@@ -10,6 +10,7 @@ SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 function ghapi() {
     curl 2>/dev/null \
+        --retry 5 \
         -u "$USER:$GH_TOKEN" \
         -H "Accept: application/vnd.github.v3+json" \
         "https://api.github.com/$1"
