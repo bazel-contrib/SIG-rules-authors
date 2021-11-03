@@ -1,6 +1,6 @@
 # Bazel Rules Authors SIG
 
-Bazel is a full-stack monorepo build & test tool from Google. <https://bazel.build>
+Bazel is a full-stack build & test tool from Google. <https://bazel.build>
 
 Bazel needs plugins, called rulesets, which teach it new languages and frameworks.
 Some rulesets are developed by Google, but most are community-maintained.
