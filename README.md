@@ -73,4 +73,4 @@ Leads:
 [bazel proposal to host sigs]: https://docs.google.com/document/d/11iOi_J7TxFGJg6q8hKjddtxMuHFO32t1i9g3r9BmU98/edit#heading=h.5mcn15i0e1ch
 [community proposal]: https://github.com/bazelbuild/proposals/blob/main/designs/2021-08-10-rules-authors-sig.md
 [meeting notes]: https://docs.google.com/document/d/1YGCYAGLzTfqSOgRFVsB8hDz-kEoTgTEKKp9Jd07TJ5c/edit#
-[members of the sig]: https://github.com/orgs/bazel-contrib/teams/rules-authors
+[members of the sig]:https://github.com/orgs/bazel-contrib/teams/rules-authors/members
