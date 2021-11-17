@@ -8,17 +8,15 @@ Some rulesets are developed by Google, but most are community-maintained.
 > The term "rulesets" is used in this document to refer to all Bazel extensions,
 > including Starlark shared libraries and utilities for end users to work with rulesets.
 
-A SIG (Special Interest Group) can be formed under the Bazel project following the
-guidance in the [Bazel proposal to host SIGs].
-
-> As of November 2021 this is still an RFC and not yet approved by Google.
+A SIG (Special Interest Group) can be formed under the Bazel project following the [Bazel SIG process].
 
 The Rules Authors SIG charter is for ruleset authors
 to share technical approaches for solving common problems,
 to have a single coherent voice for interacting with the core Bazel team, and
 to provide a more consistent experience for Bazel end-users.
 
-More details are in the [Community proposal] to form the Rules Authors SIG.
+Our SIG is chartered as part of the Bazel project:
+<https://github.com/bazelbuild/community/blob/main/sigs/rules-authors/CHARTER.md>
 
 # Participating in the SIG
 
@@ -60,6 +58,8 @@ Contact the SIG:
 
 Read the [Meeting notes] from prior meetings.
 
+Read the original [community proposal] to form the Rules Authors SIG.
+
 ## Members and partners
 
 List of [Members of the SIG] (unless you're a member, this will show only members who chose to allow this information to be public).
@@ -70,7 +70,7 @@ Leads:
 - Helen Altshuler <helen@engflow.com>
 - Keith Smiley <keithbsmiley@gmail.com>
 
-[bazel proposal to host sigs]: https://docs.google.com/document/d/11iOi_J7TxFGJg6q8hKjddtxMuHFO32t1i9g3r9BmU98/edit#heading=h.5mcn15i0e1ch
 [community proposal]: https://github.com/bazelbuild/proposals/blob/main/designs/2021-08-10-rules-authors-sig.md
 [meeting notes]: https://docs.google.com/document/d/1YGCYAGLzTfqSOgRFVsB8hDz-kEoTgTEKKp9Jd07TJ5c/edit#
-[members of the sig]:https://github.com/orgs/bazel-contrib/people
+[members of the sig]: https://github.com/orgs/bazel-contrib/people
+[bazel sig process]: http://bazel.build/sig.html
