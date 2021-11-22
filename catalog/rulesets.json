@@ -117,6 +117,27 @@
     {
       "ghrepo": "tweag/rules_haskell",
       "bazel-recommended": true
+    },
+    {
+      "ghrepo": "slamdev/rules_helm"
+    },
+    {
+      "ghrepo": "hdl/bazel_rules_hdl"
+    },
+    {
+      "ghrepo": "tweag/rules_nixpkgs"
+    },
+    {
+      "ghrepo": "tweag/rules_sh"
+    },
+    {
+      "ghrepo": "tweag/gazelle_cabal"
+    },
+    {
+      "ghrepo": "vmware/rules_oss_audit"
+    },
+    {
+      "ghrepo": "salesforce/rules_spring"
     }
   ]
 }
