@@ -9,4 +9,4 @@ Run `./scrape_data.sh`
 
 ## Add a new ruleset
 
-TODO: a `jq` one-liner that makes this hard to get wrong
+Run `./add_ruleset.sh`. It will prompt for data needed, and add the entry to `rulesets.json`.
