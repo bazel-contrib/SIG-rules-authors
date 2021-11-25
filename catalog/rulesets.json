@@ -147,6 +147,9 @@
     },
     {
       "ghrepo": "grailbio/rules_r"
+    },
+    {
+      "ghrepo": "dropbox/dbx_build_tools"
     }
   ]
 }
