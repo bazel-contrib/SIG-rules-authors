@@ -162,6 +162,12 @@
     },
     {
       "ghrepo": "jmillikin/rules_flex"
+    },
+    {
+      "ghrepo": "bazelruby/rules_ruby"
+    },
+    {
+      "ghrepo": "coinbase/rules_ruby"
     }
   ]
 }
