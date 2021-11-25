@@ -138,6 +138,15 @@
     },
     {
       "ghrepo": "salesforce/rules_spring"
+    },
+    {
+      "ghrepo": "grailbio/bazel-toolchain"
+    },
+    {
+      "ghrepo": "grailbio/bazel-compilation-database"
+    },
+    {
+      "ghrepo": "grailbio/rules_r"
     }
   ]
 }
