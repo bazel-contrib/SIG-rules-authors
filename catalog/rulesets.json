@@ -150,6 +150,18 @@
     },
     {
       "ghrepo": "dropbox/dbx_build_tools"
+    },
+    {
+      "ghrepo": "jmillikin/rules_m4"
+    },
+    {
+      "ghrepo": "jmillikin/rules_ragel"
+    },
+    {
+      "ghrepo": "jmillikin/rules_bison"
+    },
+    {
+      "ghrepo": "jmillikin/rules_flex"
     }
   ]
 }
