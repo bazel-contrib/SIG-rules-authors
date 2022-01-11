@@ -31,7 +31,7 @@ Companies can contribute in several ways:
 
 - _Intellectual property_: Upstream fixes and features your organization has made. Donate proprietary rulesets developed in-house.
 - _Engineering time_: Give your enthusiastic developers some dedicated "20% time" to make targeted contributions that benefit your use cases.
-- _Financial support_: The SIG plans to accept monetary contribution, likely using <https://opencollective.com>.
+- _Financial support_: The SIG accepts monetary contribution, via https://opencollective.com/bazel-rules-authors-sig
 
 Participation benefits your company:
 
