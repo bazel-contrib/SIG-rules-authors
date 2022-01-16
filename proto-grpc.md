@@ -38,7 +38,7 @@ rule which can be used to establish libraries of `.proto` files and map their de
 example, given the following dependency tree of `.proto` files, we could define a set of
 `proto_library` targets:
 
-![Tree of proto files](./_static/proto-tree.png)
+![Tree of proto files](./assets/proto-tree.png)
 
 ```starlark
 load("@rules_proto//proto:defs.bzl", "proto_library")
