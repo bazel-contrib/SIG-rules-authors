@@ -107,7 +107,7 @@ The full list of available rulesets has been compiled in the table below, showin
 supported by each. If you know of a ruleset not shown in this list, please open an issue
 [here](https://github.com/bazel-contrib/SIG-rules-authors/issues).
 
-<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTiSt_QqCX1BHHf5BQZp5niRdBPwXbCn9TlpBwJrBRGEscZ75fQE8J4jupOMHu61uoAerUJsyXrCtDc/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTiSt_QqCX1BHHf5BQZp5niRdBPwXbCn9TlpBwJrBRGEscZ75fQE8J4jupOMHu61uoAerUJsyXrCtDc/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false" style="width: 100%; height: 400px"></iframe>
 
 
 ## Picking a Ruleset
