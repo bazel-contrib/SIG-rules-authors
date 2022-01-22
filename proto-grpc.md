@@ -24,12 +24,12 @@ reflect today's state.
 ## The Basics
 
 At its most basic level, the task of working with Protobuf and gRPC `.proto` files is much the same
-as elsewhere: we execute the Protobuf Compiler `protoc` with the necessary arguments, environment
-and plugins to get it to produce a desired set of files or libraries for any specific language. For
-those unfamiliar with protoc, it is a small compiler executable that parses sets of `.proto`
-formatted files and executes plugins to write a set of output source code files. These files
-implement the interfaces for working with the messages and services in the language supported by the
-plugin.
+as outside of Bazel: we execute the Protobuf Compiler `protoc` with the necessary arguments,
+environment and plugins to get it to produce a desired set of files or libraries for any specific
+language. For those unfamiliar with protoc, it is a small compiler executable that parses sets of
+`.proto` formatted files and executes plugins to write a set of output source code files. These
+files implement the interfaces for working with the messages and services in the language supported
+by the plugin.
 
 However, given the prevalence of Protobuf and gRPC use, users are not expected to reinvent the rules
 needed for calling protoc themselves. Instead, the common base dependency ruleset
