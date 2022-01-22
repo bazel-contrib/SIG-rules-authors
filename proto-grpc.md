@@ -150,20 +150,20 @@ that other rules can use to drive protoc.
 
 However, the complications on top of this process come in three main varieties:
 
-- **Plugin Determinism**: Determinism in the context of a protoc plugin is used to mean that the
-  outputs produced are stably definable purely from the input `.proto` file names and the plugin
-  options. Under this definition, all of the core languages supported by the canonical Protobuf and
-  gRPC implementations are considered deterministic. However, a number of third-party plugins for
-  other languages become non-deterministic when dealing with gRPC and services; the most commonly
-  observed behaviour is that they will produce output files named by the services *within* the
-  `.proto` files. On the extreme end, there are some plugins that produce *no* outputs and are
+- **Plugin Output Predictability**: Predictability in the context of a protoc plugin is used to mean
+  that the outputs produced are stably definable purely from the input `.proto` file names and the
+  plugin options. Under this definition, all of the core languages supported by the canonical
+  Protobuf and gRPC implementations are considered predictable. However, a number of third-party
+  plugins for other languages become non-predictable when dealing with gRPC and services; the most
+  commonly observed behaviour is that they will produce output files named by the services *within*
+  the `.proto` files. On the extreme end, there are some plugins that produce *no* outputs and are
   expected to be executed as tests, such as for validation.
 
-  This non-determinism is a challenge for Bazel, which expects to be able to assemble the full graph
-  of files and targets without having to read the contents of any of the source files. Resolving
-  this behaviour into a structure that can work under Bazel leads to a large part of the variation
-  between rulesets. At a basic level, a number of these plugins can be manipulated into a
-  deterministic behaviour through options and post-processing, or the use of
+  This non-predictability is a challenge for Bazel, which expects to be able to assemble the full
+  graph of files and targets without having to read the contents of any of the source files.
+  Resolving this behaviour into a structure that can work under Bazel leads to a large part of the
+  variation between rulesets. At a basic level, a number of these plugins can be manipulated into a
+  predictable behaviour through options and post-processing, or the use of
   [declare_directory](https://docs.bazel.build/versions/main/skylark/lib/actions.html#declare_directory)
   to capture the full output tree without knowing its structure ahead of time.
 
@@ -249,7 +249,7 @@ For further detail on some of these topics, please consider looking at the follo
 
 - [BazelCon 2021 BOF BUILD File Generation - Automating Protocol Buffer Rules with Gazelle](https://www.youtube.com/watch?v=QnFkgHxM5oU):
   The recording of a presentation from BazelCon 2021 on how stackb/rules_proto uses Gazelle to
-  solve the plugin determinism problem.
+  solve the plugin output predictability problem.
 
 - [History](https://github.com/stackb/rules_proto#history): A history of the origins and differences
   between the two cross-language rulesets.
