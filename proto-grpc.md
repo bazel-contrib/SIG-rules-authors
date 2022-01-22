@@ -187,10 +187,11 @@ However, the complications on top of this process come in three main varieties:
   challenging, since rules authors must keep on top of updates to their upstream dependencies.
 
   The introduction of [bzlmod](https://docs.bazel.build/versions/main/bzlmod.html) to Bazel 
-  (expected in version 6) will hopefully resolve many of the dependency issues listed above and in
-  doing so remove workload from rules authors and allow rules users more freedom to choose versions.
-  Under bzlmod, the dependency tree is explicitly managed, with updates to transitive dependencies
-  handled transparently without updates to intermidiary rulesets.
+  (expected in version 6, but testable with an experimental flag in version 5) will hopefully
+  resolve many of the dependency issues listed above and in doing so remove workload from rules
+  authors and allow rules users more freedom to choose versions. Under bzlmod, the dependency tree
+  is explicitly managed by the end user, with updates to transitive dependencies handled
+  transparently without updates needed to intermidiary rulesets.
 
 The above three points dictate much of fragmentation seen between rulesets, since there are numerous
 solutions to these problems, each with their own tradeoffs. The solution that works well for one
