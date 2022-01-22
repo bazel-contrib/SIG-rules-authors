@@ -155,7 +155,7 @@ and transforms them to a set of
 and [ProtoInfo providers](https://docs.bazel.build/versions/main/skylark/lib/ProtoInfo.html)
 that other rules can use to drive protoc.
 
-However, the complications on top of this process come in three main varieties:
+However, the complications on top of this process come in four main varieties:
 
 - **Plugin Output Predictability**: Predictability in the context of a protoc plugin is used to mean
   that the outputs produced are stably definable purely from the input `.proto` file names and the
@@ -180,6 +180,14 @@ However, the complications on top of this process come in three main varieties:
   the `.proto` files, captures any of the plugin behaviour in Go functions and produces `BUILD`
   files that satisfy all of Bazel's requirements.
 
+- **Plugin Configurability**: Many protoc plugins have a high degree of configurability, with
+  options that may radically alter the outputs and the behaviour of the generated code. As such,
+  supporting the full range of options can be a challenge to wrap in a sensible Starlark rule API.
+  Generally, options that only alter the output file content are well supported across rulesets,
+  with mechanisms for injecting and manipulating these options in the rules. However, options that
+  alter the output directory layout may trigger the output predictability issue above, with a
+  similar conclusion regarding the introduction of Gazelle.
+
 - **Cross-Cutting**: Rulesets that support Protobuf and gRPC need to know about both protoc
   execution and about the target languages for which the plugins are generating files. This requires
   the authors of such rulesets to have expertise in every language that they hope to support, whilst
@@ -200,7 +208,7 @@ However, the complications on top of this process come in three main varieties:
   is explicitly managed by the end user, with updates to transitive dependencies handled
   transparently without updates needed to intermidiary rulesets.
 
-The above three points dictate much of fragmentation seen between rulesets, since there are numerous
+The above four points dictate much of fragmentation seen between rulesets, since there are numerous
 solutions to these problems, each with their own tradeoffs. The solution that works well for one
 language may be less suitable for another, leading to naturally diverging behaviour. As such,
 hopefully it is now slightly cleared why there is such a diversity of Protobuf and gRPC rulesets,
