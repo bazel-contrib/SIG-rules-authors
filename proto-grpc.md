@@ -78,7 +78,7 @@ produce libraries.
 Within the Bazel ecosystem, there are three main types of rulesets to consider when using Protobuf
 or gRPC:
 
-- **Core Dependencies**: The [Protobuf](https://github.com/protocolbuffers/protobuf/) and
+- **Canonical Dependencies**: The [Protobuf](https://github.com/protocolbuffers/protobuf/) and
   [gRPC](https://github.com/grpc/grpc) source repositories contain a minimal selection of rules for
   their key languages (C++, Python). These rules benefit from needing no further dependencies
   beyond the basic repos. However, they are also mostly undocumented and not typically not well
@@ -119,7 +119,7 @@ languages you currently need to support within your project and any you may expe
 near future, as this dictates the majority of the choices:
 
 1. In the event you are using only C++ and/or Python, consider using the rules provided in the
-   core dependency repositories above. Despite their lack of documentation, they generally work
+   canonical dependency repositories above. Despite their lack of documentation, they generally work
    acceptably for simple use-cases and benefit from not pulling in any further rule dependencies.
    Simplicity is your friend in this case.
 
@@ -152,7 +152,7 @@ However, the complications on top of this process come in three main varieties:
 
 - **Plugin Determinism**: Determinism in the context of a protoc plugin is used to mean that the
   outputs produced are stably definable purely from the input `.proto` file names and the plugin
-  options. Under this definition, all of the core languages supported by the primary Protobuf and
+  options. Under this definition, all of the core languages supported by the canonical Protobuf and
   gRPC implementations are considered deterministic. However, a number of third-party plugins for
   other languages become non-deterministic when dealing with gRPC and services; the most commonly
   observed behaviour is that they will produce output files named by the services *within* the
