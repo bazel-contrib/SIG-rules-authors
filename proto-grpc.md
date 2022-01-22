@@ -60,6 +60,11 @@ proto_library(
 )
 ```
 
+You can create a similar plot of your dependency tree of `proto_library` targets using the
+following snippet (you must have DOT/GrphViz installed):
+
+`bazel query --output graph 'kind(proto_library, //...)'  | dot -Tpng > graph.png`
+
 Note that we could have grouped all of these `.proto` files under a single `proto_library` in this
 particular case. In real codebases these files may be under separate directories and managed by
 different groups or companies. The convention for splitting or grouping libraries varies by target
