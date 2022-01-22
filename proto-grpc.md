@@ -68,8 +68,10 @@ following snippet (you must have DOT/GrphViz installed):
 Note that we could have grouped all of these `.proto` files under a single `proto_library` in this
 particular case. In real codebases these files may be under separate directories and managed by
 different groups or companies. The convention for splitting or grouping libraries varies by target
-language and is somewhat a matter of local taste. In general you should be consistent within your
-workspace, but fundamentally the process underneath works the same regardless.
+language, but for most it is a matter of local preference. However, for some languages, files with
+the same internal [`package`](https://developers.google.com/protocol-buffers/docs/proto3#packages)
+specifier should normally be grouped into a single library. In general, you should be
+consistent with your grouping conventions within your workspace.
 
 At this point we have defined the abstract collections of `.proto` files, but these targets alone
 do not provide the source code artifacts to interact with the messages and services within our code,
