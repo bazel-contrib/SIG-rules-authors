@@ -3,7 +3,7 @@
 The use of [Protobuf](https://developers.google.com/protocol-buffers) and
 [gRPC](https://grpc.io) with [Bazel](https://bazel.build) is a particularly common scenario, since
 these three technologies provide a complimentary base of build, serialisation and remote-call upon
-which to build complex systems and products. This document summarises the current state of the
+which to build complex systems and products. This document summarizes the current state of the
 Protobuf/gRPC Bazel ecosystem and gives advice on getting started when you are looking to integrate
 one of these tools into your project.
 
@@ -107,7 +107,7 @@ or gRPC:
   more difficult behaviours of plugins.
 
 - **Language-Specific Rulesets**: Finally we have the language-specific rulesets, which may
-  introduce their own specialised rules for supported language, such as seen in
+  introduce their own specialized rules for supported language, such as seen in
   [rules_go](https://github.com/bazelbuild/rules_go#protobuf-and-grpc). The benefit of these rules
   is that they are designed and supported around the needs of the specific language involved and
   benefit from the expertise of the rules authors. However, in any multi-language project, this may
