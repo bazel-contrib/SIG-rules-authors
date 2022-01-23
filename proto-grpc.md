@@ -35,10 +35,13 @@ However, given the prevalence of Protobuf and gRPC use, users are not expected t
 needed for calling protoc themselves. Instead, the common base dependency ruleset
 [bazelbuild/rules_proto](https://github.com/bazelbuild/rules_proto) provides the `proto_library`
 rule which can be used to establish libraries of `.proto` files and map their dependencies. For
-example, given the following dependency tree of `.proto` files, we could define a set of
-`proto_library` targets:
+example, suppose we have the following dependency tree of `.proto` files:
 
 ![Tree of proto files](./assets/proto-tree.png)
+
+For this set of files, we could define the following collection of `proto_library` targets. Note
+that some rulesets introduced later, such as stackb/rules_proto and rules_go, provide tooling
+through Gazelle for auto-generating these `proto_library` from the `.proto` files.
 
 ```starlark
 load("@rules_proto//proto:defs.bzl", "proto_library")
@@ -60,10 +63,14 @@ proto_library(
 )
 ```
 
-You can create a similar plot of your dependency tree of `proto_library` targets using the
-following snippet (you must have DOT/GrphViz installed):
+Using `bazel query`, we can view the graph that Bazel has assembled from the targets, showing it
+correctly reflects the dependency of `proto_c` on `proto_a` and `proto_b` (you must have DOT/GrphViz
+installed):
 
-`bazel query --output graph 'kind(proto_library, //...)'  | dot -Tpng > graph.png`
+`bazel query --output graph --nograph:factored 'kind(proto_library, //...)'  | dot -Tpng > graph.png`
+
+![Generated graph of proto_library targets](./assets/proto-bazel-query.png)
+
 
 Note that we could have grouped all of these `.proto` files under a single `proto_library` in this
 particular case. In real codebases these files may be under separate directories and managed by
