@@ -2,7 +2,7 @@
 
 The use of [Protobuf](https://developers.google.com/protocol-buffers) and
 [gRPC](https://grpc.io) with [Bazel](https://bazel.build) is a particularly common scenario, since
-these three technologies provide a complimentary base of build, serialisation and remote-call upon
+these three technologies provide a complimentary base of build, serialization and remote-call upon
 which to build complex systems and products. This document summarizes the current state of the
 Protobuf/gRPC Bazel ecosystem and gives advice on getting started when you are looking to integrate
 one of these tools into your project.
@@ -11,7 +11,7 @@ Given that all three of Bazel, gRPC and Protobuf are Google-derived projects, yo
 there is a simple integration between them. However, the existence of this document should indicate
 that there is not a single simple answer to integrating these tools. Originally, Protobuf and gRPC
 rules were baked into Bazel for a few key languages, but this has understandably not continued to
-scale with the many new langauges that are now supported in external Bazel rulesets. As a result,
+scale with the many new languages that are now supported in external Bazel rulesets. As a result,
 independent rulesets have been released by the community that provide the integrations necessary to
 convert `.proto` files into a wide variety of languages and libraries.
 
