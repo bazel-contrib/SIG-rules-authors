@@ -65,7 +65,7 @@ proto_library(
 
 Using `bazel query`, we can view the graph that Bazel has assembled from the targets, showing it
 correctly reflects the dependency of `proto_c` on `proto_a` and `proto_b` (you must have
-DOT/GraphViz installed):
+`dot` from [Graphviz](https://graphviz.org/) installed):
 
 `bazel query --output graph --nograph:factored 'kind(proto_library, //...)'  | dot -Tpng > graph.png`
 
