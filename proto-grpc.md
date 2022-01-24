@@ -26,8 +26,8 @@ reflect today's state.
 At its most basic level, the task of working with Protobuf and gRPC `.proto` files is much the same
 as outside of Bazel: we execute the Protobuf Compiler `protoc` with the necessary arguments,
 environment and plugins to get it to produce a desired set of files or libraries for any specific
-language. For those unfamiliar with protoc, it is a small compiler executable that parses sets of
-`.proto` formatted files and executes plugins to write a set of output source code files. These
+language. For those unfamiliar with `protoc`, it is a small compiler executable that parses sets of
+`.proto` files and executes plugins to write a set of output source code files. These
 files implement the interfaces for working with the messages and services in the language supported
 by the plugin.
 
