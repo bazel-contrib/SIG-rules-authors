@@ -34,8 +34,9 @@ by the plugin.
 However, given the prevalence of Protobuf and gRPC use, users are not expected to reinvent the rules
 needed for calling protoc themselves. Instead, the common base dependency ruleset
 [bazelbuild/rules_proto](https://github.com/bazelbuild/rules_proto) provides the `proto_library`
-rule which can be used to establish libraries of `.proto` files and map their dependencies. For
-example, suppose we have the following dependency tree of `.proto` files:
+rule which can be used to establish libraries of `.proto` files, map their dependencies and validate
+the correctness of the syntax and imports. For example, suppose we have the following dependency
+tree of `.proto` files:
 
 ![Tree of proto files](./assets/proto-tree.png)
 
