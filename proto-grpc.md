@@ -93,9 +93,9 @@ or gRPC:
 
 - **Canonical Dependencies**: The [Protobuf](https://github.com/protocolbuffers/protobuf/) and
   [gRPC](https://github.com/grpc/grpc) source repositories contain a minimal selection of rules for
-  their key languages (C++, Python). These rules benefit from needing no further dependencies
-  beyond the basic repos. However, they are also mostly undocumented and not typically not well
-  supported.
+  their key languages (C++, Python). Whilst these rules may benefit from needing no further
+  dependencies, they are generally poorly documented and do not necessarily integrate with the
+  `proto_library` rule introduced earlier.
 
 - **Cross-Language Rulesets**: There are two main multi-language rulesets available:
   [rules_proto_grpc](https://github.com/rules-proto-grpc/rules_proto_grpc) and
@@ -127,25 +127,26 @@ supported by each. If you know of a ruleset not shown in this list, please open 
 
 Given the above options of rulesets, it may appear difficult to select which to use when introducing
 Protobuf or gRPC to a project. However, the selection essentially comes down to a process of
-elemination through three steps. As a prerequisite for these steps, you should consider the
-languages you currently need to support within your project and any you may expect to support in the
-near future, as this dictates the majority of the choices:
+elemination. As a prerequisite for these steps, you should consider the languages you currently need
+to support within your project and any you may expect to support in the near future, as this
+dictates the majority of the choices:
 
-1. In the event you are using only C++ and/or Python, consider using the rules provided in the
-   canonical dependency repositories above. Despite their lack of documentation, they generally work
-   acceptably for simple use-cases and benefit from not pulling in any further rule dependencies.
-   Simplicity is your friend in this case.
-
-2. If you have a single required language (or a low but manageable number), consider using the
+1. If you have a single required language (or a low but manageable number), consider using the
    language-specific rulesets if they are available and suitably documented. As mentioned before,
    these rulesets benefit from being tailored to the language requirements and you will likely be
    pulling these rulesets into your workspace already.
 
-3. If you have multiple supported languages or languages that do not have language-specific
+2. If you have multiple supported languages or languages that do not have language-specific
    proto/gRPC rules, consider using one of the two cross-language rulesets listed above. In this
    case, you will benefit from the common rule interface and behaviour between your languages.
    Choosing between the two rulesets will effectively come down to your preference for using
    Gazelle within your project and the languages supported by each.
+
+You may notice that the 'Canonical' rulesets introduced above are not suggested in this decision
+process. This is due to their poor integration with other rulesets using `proto_library` and
+their lack of useful documentation on their rules. Should they meet your specific requirements you
+may want to consider them, but beware that expanding to new languages in the future will require
+larger changes to your handling of `.proto` files.
 
 
 ## In Depth
