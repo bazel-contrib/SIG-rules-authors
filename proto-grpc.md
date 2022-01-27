@@ -1,3 +1,7 @@
+---
+nav_order: 2
+---
+
 # Protobuf and gRPC with Bazel
 
 The use of [Protobuf](https://developers.google.com/protocol-buffers) and
