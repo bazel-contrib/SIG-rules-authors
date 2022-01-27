@@ -1,6 +1,8 @@
 remote_theme: pmarsceill/just-the-docs
 logo: "/assets/logo-mini.png"
 
+color_scheme: custom
+
 gh_edit_link: true
 gh_edit_link_text: Edit this page
 gh_edit_repository: https://github.com/bazel-contrib/SIG-rules-authors
