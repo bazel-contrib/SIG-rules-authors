@@ -162,9 +162,8 @@ At the top-level, all of these rulesets depend on the
 [bazelbuild/rules_proto](https://github.com/bazelbuild/rules_proto) ruleset described previously,
 which introduces the `proto_library` language-agnostic rule, which collects a set of `.proto` files
 and transforms them to a set of
-[descriptors](https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.descriptor)
-and [ProtoInfo providers](https://docs.bazel.build/versions/main/skylark/lib/ProtoInfo.html)
-that other rules can use to drive protoc.
+[FileDescriptorSet](https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/descriptor.proto#L57-L91)
+and [ProtoInfo providers](https://docs.bazel.build/versions/main/skylark/lib/ProtoInfo.html).
 
 However, the complications on top of this process come in four main varieties:
 
