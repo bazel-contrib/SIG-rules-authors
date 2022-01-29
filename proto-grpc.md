@@ -46,7 +46,7 @@ tree of `.proto` files:
 
 For this set of files, we could define the following collection of `proto_library` targets. Note
 that some rulesets introduced later, such as stackb/rules_proto and rules_go, provide tooling
-through Gazelle for auto-generating these `proto_library` from the `.proto` files.
+through Gazelle for auto-generating these `proto_library` targets from the `.proto` files.
 
 ```starlark
 load("@rules_proto//proto:defs.bzl", "proto_library")
