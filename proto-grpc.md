@@ -258,11 +258,12 @@ users:
   This has led to protoc being downloaded as a prebuilt binary in bazelbuild/rules_proto, but this
   mechanism breaks when a user wants to use a different protobuf version.
 
-- **Python Toolchains & gRPC**: The Bazel build of gRPC bypasses the Python toolchains defined
-  through the Python rules in rules_python. Under normal circumstances (a single system Python),
-  this happens to resolve consistently. However, when a custom Python toolchain is used or the
-  system has a more complex Python setup, the gRPC build may resolve the incorrect Python version.
-  This may result in a Python extension that is incompatible with the target Python.
+- **Python Toolchains & gRPC**: When working with Python and gRPC, the Bazel build of gRPC bypasses
+  the Python toolchains defined through the Python rules in rules_python. Under normal circumstances
+  (a single system Python), this typically resolve consistently. However, when a custom Python
+  toolchain is used or the system has a more complex Python setup, the gRPC build may resolve the
+  incorrect Python version. This may result in a Python extension that is incompatible with the
+  target Python.
 
 
 ## Resources and Further Reading
