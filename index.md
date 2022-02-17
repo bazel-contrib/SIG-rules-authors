@@ -9,7 +9,7 @@ Bazel is a full-stack build & test tool from Google. <https://bazel.build>
 Bazel needs plugins, called rulesets, which teach it new languages and frameworks.
 Some rulesets are developed by Google, but most are community-maintained.
 
-> The term "rulesets" is used in this document to refer to all Bazel extensions,
+> We use the term "rulesets" to refer to all Bazel extensions,
 > including Starlark shared libraries and utilities for end users to work with rulesets.
 
 A SIG (Special Interest Group) can be formed under the Bazel project following the [Bazel SIG process].
@@ -35,7 +35,7 @@ Companies can contribute in several ways:
 
 - _Intellectual property_: Upstream fixes and features your organization has made. Donate proprietary rulesets developed in-house.
 - _Engineering time_: Give your enthusiastic developers some dedicated "20% time" to make targeted contributions that benefit your use cases.
-- _Financial support_: The SIG accepts monetary contribution, via https://opencollective.com/bazel-rules-authors-sig
+- _Financial support_: The SIG accepts monetary contribution, via OpenCollective: <https://opencollective.com/bazel-rules-authors-sig>
 
 Participation benefits your company:
 
@@ -49,15 +49,15 @@ Please get in touch with us if you think your company may be interested. See the
 
 If you maintain a ruleset, you can ask to join the [Members of the SIG].
 
-> We have not yet determined how to admit members, see https://github.com/bazel-contrib/SIG-rules-authors/issues/1
+> We have not yet determined how to admit members, see <https://github.com/bazel-contrib/SIG-rules-authors/issues/1>
 
 # Resources
 
 Contact the SIG:
 
-- on Slack: `#rules` channel in https://slack.bazel.build
+- on Slack: `#rules` channel in <https://slack.bazel.build>
 - by Email: bazel-contrib@googlegroups.com
-- Email archives: https://groups.google.com/g/bazel-contrib/
+- Email archives: <https://groups.google.com/g/bazel-contrib/>
 - If you need to reach out privately, email the SIG Leads listed below.
 
 Read the [Meeting notes] from prior meetings.
