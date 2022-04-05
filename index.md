@@ -64,6 +64,10 @@ Read the [Meeting notes] from prior meetings.
 
 Read the original [community proposal] to form the Rules Authors SIG.
 
+## New repos
+
+Convention for naming repo, workspace - suggestion is bazel-contrib/<repo_name> -> contrib_<repo_name>
+
 ## Members and partners
 
 List of [Members of the SIG] (unless you're a member, this will show only members who chose to allow this information to be public).
