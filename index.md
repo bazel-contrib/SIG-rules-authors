@@ -64,7 +64,7 @@ Read the [Meeting notes] from prior meetings.
 
 Read the original [community proposal] to form the Rules Authors SIG.
 
-## New repos
+## Create and Managing repos
 
 Convention for naming repo, workspace - suggestion is bazel-contrib/<repo_name> -> contrib_<repo_name>
 
