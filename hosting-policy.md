@@ -21,7 +21,9 @@ This reduces the overall cognitive burden of working across rulesets and encoura
 > and much of the content was copied from <https://github.com/MobileNativeFoundation/foundation/pull/12/files>.
 > Thanks to the Mobile Native Foundation for providing a similar resource!
 
-## Criteria for adding a repo
+## Adding a repo
+
+### Adding Criteria
 
 We want the bazel-contrib org to be trusted, so it shouldn't fall into disrepair or host "abandonware".
 
@@ -50,7 +52,16 @@ we'll also add the following criteria:
 
 1. Include the rules in bazel-central-registry, keep that CI green
 
-## Procedure for archiving a repo
+### Adding Procedure
+
+1. Rules authors can reach out to the SIG by filing an issue suggesting the repo be added to our org. The issue should demonstrate that the project meets the criteria above.
+1. The SIG will meet and determine whether the criteria are satisfied. This is solely up to discretion of the members attending the meeting.
+1. The result will be posted back to the issue.
+1. The requestor will work with a bazel-contrib repo admin to perform the actual move. GitHub does a great job of forwarding URLs to the new org.
+
+## Archiving a repo
+
+### Archive Criteria
 
 Software projects don't live forever. Eventually, a project may be archived to indicate that it is no longer maintained and that the rules authors SIG no longer recommends its use. The SIG will always discuss a project’s future with its maintainers to determine the best path forward, which could include finding new maintainers for the project.
 
@@ -65,6 +76,8 @@ More often, we expect that this procedure will begin as a reaction to some user 
 >  In the future, we hope that the [rules catalog](https://github.com/bazel-contrib/SIG-rules-authors/issues/2) will make it more obvious when a project should be considered for archiving.
 
 Archived projects will use GitHub’s “archived” status: code and past releases will still be available.
+
+### Archive Procedure
 
 To archive a project:
 
