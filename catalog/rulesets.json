@@ -3,10 +3,12 @@
   "rulesets": [
     {
       "ghrepo": "bazelbuild/bazel-skylib",
+      "bzlmod_name": "bazel_skylib",
       "bazel-recommended": true
     },
     {
-      "ghrepo": "bazelbuild/rules_android"
+      "ghrepo": "bazelbuild/rules_android",
+      "bzlmod_name": "rules_android"
     },
     {
       "ghrepo": "bazelbuild/rules_appengine"
@@ -16,7 +18,8 @@
       "bazel-recommended": true
     },
     {
-      "ghrepo": "bazelbuild/rules_cc"
+      "ghrepo": "bazelbuild/rules_cc",
+      "bzlmod_name": "rules_cc"
     },
     {
       "ghrepo": "bazelbuild/rules_closure"
@@ -49,7 +52,8 @@
       "ghrepo": "bazelbuild/rules_gwt"
     },
     {
-      "ghrepo": "bazelbuild/rules_java"
+      "ghrepo": "bazelbuild/rules_java",
+      "bzlmod_name": "rules_java"
     },
     {
       "ghrepo": "bazelbuild/rules_jsonnet"
@@ -66,12 +70,14 @@
       "ghrepo": "bazelbuild/rules_kotlin"
     },
     {
-      "ghrepo": "bazelbuild/rules_license"
+      "ghrepo": "bazelbuild/rules_license",
+      "bzlmod_name": "rules_license"
     },
     {
       "ghrepo": "bazelbuild/rules_nodejs",
       "bazel-recommended": true,
-      "repository": "build_bazel_rules_nodejs"
+      "repository": "build_bazel_rules_nodejs",
+      "bzlmod_name": "rules_nodejs"
     },
     {
       "ghrepo": "bazelbuild/rules_perl"
@@ -79,7 +85,8 @@
     {
       "ghrepo": "bazelbuild/rules_pkg",
       "shortname": "Packaging",
-      "bazel-recommended": true
+      "bazel-recommended": true,
+      "bzlmod_name": "rules_pkg",
     },
     {
       "ghrepo": "bazelbuild/rules_postcss"
@@ -87,11 +94,13 @@
     {
       "ghrepo": "bazelbuild/rules_proto",
       "shortname": "Protocol Buffers",
-      "bazel-recommended": true
+      "bazel-recommended": true,
+      "bzlmod_name": "rules_proto"
     },
     {
       "ghrepo": "bazelbuild/rules_python",
-      "bazel-recommended": true
+      "bazel-recommended": true,
+      "bzlmod_name": "rules_python"
     },
     {
       "ghrepo": "bazelbuild/rules_rust"
@@ -128,7 +137,8 @@
       "ghrepo": "tweag/rules_nixpkgs"
     },
     {
-      "ghrepo": "tweag/rules_sh"
+      "ghrepo": "tweag/rules_sh",
+      "bzlmod_name": "rules_sh"
     },
     {
       "ghrepo": "tweag/gazelle_cabal"
