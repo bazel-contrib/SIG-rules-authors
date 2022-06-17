@@ -168,6 +168,30 @@
     },
     {
       "ghrepo": "coinbase/rules_ruby"
+    },
+    {
+      "ghrepo": "buildfoundation/bazel_rules_detekt"
+    },
+    {
+      "ghrepo": "DataDog/rules_oci_bootstrap"
+    },
+    {
+      "ghrepo": "acqio/rules_microsoft_azure"
+    },
+    {
+      "ghrepo": "spietras/rules_conda"
+    },
+    {
+      "ghrepo": "ubiquitoustech/rules_vite"
+    },
+    {
+      "ghrepo": "kkiningh/rules_verilator"
+    },
+    {
+      "ghrepo": "BalderOdinson/rules_cuda"
+    },
+    {
+      "ghrepo": "simuons/rules_clojure"
     }
   ]
 }
