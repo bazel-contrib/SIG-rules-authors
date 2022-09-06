@@ -56,6 +56,8 @@ Contact the SIG:
 - Email archives: https://groups.google.com/g/bazel-contrib/
 - If you need to reach out privately, email the SIG Leads listed below.
 
+Check out the [Bazel rules SIG website].
+
 Read the [Meeting notes] from prior meetings.
 
 Read the original [community proposal] to form the Rules Authors SIG.
@@ -74,3 +76,4 @@ Leads:
 [meeting notes]: https://docs.google.com/document/d/1YGCYAGLzTfqSOgRFVsB8hDz-kEoTgTEKKp9Jd07TJ5c/edit#
 [members of the sig]: https://github.com/orgs/bazel-contrib/people
 [bazel sig process]: http://bazel.build/sig.html
+[bazel rules sig website]: https://bazel-contrib.github.io/SIG-rules-authors/
