@@ -10,13 +10,13 @@ nav_order: 3
 - Covering the use of rules_go with Bazel and Go
 - Creating a basic Go project for the tutorial
 - Implementing a WORKSPACE and BUILD.bazel files 
-- Using gazelle to generate more WORKSPACE and BUILD.bazel updates
+- Using Gazelle to generate more WORKSPACE and BUILD.bazel updates
 - Utilizing different Bazel commands
-- An overview of gazelle and Go dependency management
+- An overview of Gazelle and Go dependency management
 - Understanding the contents of the WORKSPACE and BUILD.bazel files
-- Creating new internal dependencies and using gazelle to update bazel
+- Creating new internal dependencies and using Gazelle to update build files
 - Adding a new external Go dependency and the Go vendoring
-- Running and implementing Go tests with bazel
+- Running and implementing Go tests with Bazel
 - Learning about other rules in rules_go
 
 ## About Bazel and Go
@@ -31,11 +31,11 @@ One of the software languages that Bazel supports include [Go](https://go.dev). 
 programming language that was created by Google. Now that we have some background about Bazel
 now let's cover some Bazel concepts.
 
-One of the concepts within bazel is a rule.  A bazel rule defines a series of actions and outputs. Toolchains are another
-concept/part of bazel. The toolchain framework is a way for rule authors to decouple their rule logic from 
+One of the concepts within Bazel is a rule.  A Bazel rule defines a series of actions and outputs. Toolchains are another
+concept/part of Bazel. The toolchain framework is a way for rule authors to decouple their rule logic from 
 the platform-based selection of tools. So we need a rule, or usually a set of rules
 (ruleset) that provides a toolchain to support a programming language.  
-The bazel open-source community maintains
+The Bazel open-source community maintains
 [rules_go](https://github.com/bazelbuild/rules_go).  This ruleset provides the following support:
 
 - Building go libraries, binaries, and tests
@@ -49,18 +49,18 @@ The bazel open-source community maintains
 - gopls integration for editor support
 - Debugging
 
-The bazel open-source community also provides another tool called [gazelle](https://github.com/bazelbuild/bazel-gazelle).
+The Bazel open-source community also provides another tool called [Gazelle](https://github.com/bazelbuild/bazel-gazelle).
 Gazelle addresses the creation and maintenance of [BUILD](https://bazel.build/concepts/build-files) files.  
-Every bazel project has BUILD (BUILD.bazel) files that define the various rules that are used within a project.
+Every Bazel project has BUILD (BUILD.bazel) files that define the various rules that are used within a project.
 When you add more code or dependencies to a project you need to update your build files.  When you add a new folder
-you need to add another BUILD file. If you have ever worked with bazel you know how much time you spend maintaining
+you need to add another BUILD file. If you have ever worked with Bazel you know how much time you spend maintaining
 these files, if you maintain the files by hand.  Gazelle was created to reduce the previously mentioned pain points.
 
 > Gazelle is a build file generator for Bazel projects. It can create new BUILD.bazel files for a project that follows language conventions, and it can update existing build files to include new sources, dependencies, and options. Gazelle natively supports Go and protobuf, and it may be extended to support new languages and custom rule sets.
 >
 >  -- <cite>https://github.com/bazelbuild/bazel-gazelle#gazelle-build-file-generator</cite> 
 
-Initially gazelle was created to support Go, and now supports many other languages. These 
+Initially Gazelle was created to support Go, and now supports many other languages. These 
 languages include but are not limited to Haskell, Java, JavaScript/TypeScript, Python, R, StarLark, and Go.
 
 Part of learning Bazel is understanding the configuration language that Bazel uses.
@@ -88,9 +88,9 @@ Technically, we do not need the go binary installed to use Bazel, but we are goi
 `cobra-cli` to generate some project code.  We did not want to add the 
 extra work to run the binary using Bazel. A developer using go,
 does not need to download the go binary.  To keep a build deterministic
-bazel and rules_go download go. rules_go requires the installation of gcc.
+Bazel and rules_go download go. rules_go requires the installation of gcc.
 
-We are not installing bazel by hand for this tutorial, but are using Bazelisk.
+We are not installing Bazel by hand for this tutorial, but are using Bazelisk.
 Bazelisk is a wrapper for Bazel written in Go. It automatically picks the
 correct version of Bazel given your current working directory, downloads it from 
 the official server (if required), and then transparently passes through all 
@@ -106,7 +106,7 @@ start a new project with Bazel.
 ## The project
 
 We are going to create a small example project first using go.  As
-we mentioned you do not need to use go directly at all when using bazel.
+we mentioned you do not need to use go directly at all when using Bazel.
 But to get an "easy" jump start we wanted to quickly generate some code.
 
 The project is going to consist of a simple CLI program that generates a
@@ -224,24 +224,24 @@ Bazel creates various directories in the project root and this file will allow g
 to ignore those directories.
 
 This is a good time to push your files into a remote git repository like GitHub. Now
-we cover rules_go and gazelle.
+we cover rules_go and Gazelle.
 
 ## Bazel Rules
 
-As we mentioned previously, bazel provides rules_go and gazelle. You can find more
+As we mentioned previously, Bazel provides rules_go and Gazelle. You can find more
 about them here:
 
 - https://github.com/bazelbuild/rules_go
 - https://github.com/bazelbuild/bazel-gazelle
 
-At a high level, we use Skylark to define that bazel will use rules from rules_go
-to create the Go support within a project. We use gazelle to manage our BUILD.bazel files,
-or WORKSPACE files, and other bazel-specific files.
+At a high level, we use Skylark to define that Bazel will use rules from rules_go
+to create the Go support within a project. We use Gazelle to manage our BUILD.bazel files,
+or WORKSPACE files, and other Bazel-specific files.
 
 If you are not familiar with BUILD.bazel files or WORKSPACE files look at:
 https://bazel.build/concepts/build-files.
 
-Next, let's create our WORKSPACE file so that bazel knows it is using rules_go and gazelle.
+Next, let's create our WORKSPACE file so that Bazel knows it is using rules_go and Gazelle.
 
 ## Create a WORKSPACE file
 
@@ -277,7 +277,7 @@ http_archive(
     ],
 )
 
-# load bazel and gazelle rules
+# load Bazel and Gazelle rules
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
@@ -305,8 +305,8 @@ go_register_toolchains(version = "1.19.1")
 gazelle_dependencies()
 ```
 
-The above WORKSPACE file contains specific version numbers for rules_go and gazelle.  Refer to the 
-gazelle site to use the latest versions.  Also, update the `go_register_toolchains(version = "1.19.1")`
+The above WORKSPACE file contains specific version numbers for rules_go and Gazelle.  Refer to the 
+Gazelle site to use the latest versions.  Also, update the `go_register_toolchains(version = "1.19.1")`
 to the version you would like to use of Go.
 
 Next, we need a BUILD (BUILD.bazel) file in the root project directory.
@@ -343,13 +343,13 @@ gazelle(
 ```
 
 Again the `gazelle:prefix` is critical.  If the value after the code "prefix:" is not named correctly
-gazelle does not update BUILD.bazel file correctly. This value contains the import path
+Gazelle does not update BUILD.bazel file correctly. This value contains the import path
 corresponds to your repository and drives dependency management. If you
-include the incorrect value gazelle will think that a dependency inside the Go code that
+include the incorrect value Gazelle will think that a dependency inside the Go code that
 lives outside the repository.
 
 The last rule that we defined is named "gazelle-update-repos".  This is a custom
-SkyLark definition that defines a gazelle command and specific arguments to that command.
+SkyLark definition that defines a Gazelle command and specific arguments to that command.
 Do not run this command yet, but this allows us to run:
 
 ```bash
@@ -370,13 +370,13 @@ an alias to run "update".
 Since we run that command a lot, we create the definition for it.
 
 We now have done the initial creation of the WORKSPACE and BUILD.bazel files. 
-Next, we will use bazel to run the gazelle target.
+Next, we will use Bazel to run the Gazelle target.
 
-## Run the gazelle commands
+## Run the Gazelle commands
 
-We previously mentioned we use bazel to run gazelle, and 
-gazelle manages the BUILD.bazel files for us.  We are using bazelisk to 
-manage and run bazel, but we will typically say "run bazel" 
+We previously mentioned we use Bazel to run Gazelle, and 
+Gazelle manages the BUILD.bazel files for us.  We are using bazelisk to 
+manage and run Bazel, but we will typically say "run bazel" 
 instead of "run bazelisk".  
 
 Run the following commands to update the root BUILD.bazel, 
@@ -419,8 +419,8 @@ files?
 
 ## The bazel files in the project.
 
-The previous gazelles command updated the BUILD.bazel file in the project's root directory
-and created new BUILD files as well. Here is a layout of the bazel files in the project.
+The previous Gazelle command updated the BUILD.bazel file in the project's root directory
+and created new BUILD files as well. Here is a layout of the Bazel files in the project.
 
 ```
 ├── BUILD.bazel
@@ -437,9 +437,9 @@ and created new BUILD files as well. Here is a layout of the bazel files in the 
 ```
 
 The WORKSPACE file was updated as well, and we have a new file called "deps.bzl". 
-We now have a working bazel project, so what commands can we run?
+We now have a working Bazel project, so what commands can we run?
 
-### Basic bazel commands
+### Basic Bazel commands
 
 Bazel has various [commands](https://bazel.build/run/build#available-commands) that 
 are defined.
@@ -457,13 +457,13 @@ In the project, you can run
 $ bazelisk build //...
 ```
 
-This will build the binary for our example project. We can run the binary that bazel
+This will build the binary for our example project. We can run the binary that Bazel
 creates with the following command:
 
 ```bash
 $ bazelisk run //:go-code-tutorial
 ```
-You can also pass in the command line option "word" that we defined to the bazel run command.
+You can also pass in the command line option "word" that we defined to the Bazel run command.
 
 ```bash
 $ bazelisk run //:go-code-tutorial word
@@ -473,7 +473,7 @@ We will cover the "test" command later, as we do not have any tests defined
 in the project.
 
 So the commands build, run, and test are pretty easy to get your head around, but the third part of the
-command was a bit confusing for me when I first learned bazel.  The "//..." or "//:something"  
+command was a bit confusing for me when I first learned Bazel.  The "//..." or "//:something"  
 is called a target.
 
 You can refer to the documentation [here](https://bazel.build/run/build#bazel-build).  The text "//..."
@@ -533,7 +533,7 @@ named go-code-tutorial_lib, and this is a target we can build.
 $ bazelisk build //:go-code-tutorial_lib
 ```
 
-This "go_libary" target is named by gazelle automatically depending on the name of your project, so
+This "go_libary" target is named by Gazelle automatically depending on the name of your project, so
 the name may differ.
 
 We can also run the go-code-tutorial binary target using the following command:
@@ -561,16 +561,16 @@ Bazel creates various folders and symlinks in the project directory. Within our 
 
 Binaries from the project are placed under the bazel-bin folder.  Inside that folder, we have another folder
 with the name go-code-tutorial\_, and that folder name is created from the name of the binary that is 
-created.  A bazel project can contain multiple binaries, so we have to have that form of naming syntax.  Inside
+created.  A Bazel project can contain multiple binaries, so we have to have that form of naming syntax.  Inside
 the go-code-tutorial\_ folder we have the binary go-code-tutorial\_.
 
-### Where gazelle defines the dependencies
+### Where Gazelle defines the dependencies
 
-One of the features of gazelle is to "vendor" Go projects.  Within this example, we are 
-using Go vendoring at the base, but bazel must also have the external dependencies defined.
+One of the features of Gazelle is to "vendor" Go projects.  Within this example, we are 
+using Go vendoring at the base, but Bazel must also have the external dependencies defined.
 
-The gazelle update-repos command takes the go.mod file and creates the StarkLark code that
-defines the external vendoring that bazel uses. External dependencies are defined in one 
+The Gazelle update-repos command takes the go.mod file and creates the StarkLark code that
+defines the external vendoring that Bazel uses. External dependencies are defined in one 
 of two locations; in the WORKSPACE file or in an external file that is referenced in
 the WORKSPACE file. The list of external dependencies can grow very long, so we recommend that
 it is defined as a reference in the WORKSPACE file.
@@ -578,7 +578,7 @@ it is defined as a reference in the WORKSPACE file.
 Each of the following lines within the WORKSPACE file defines the location of the deps.bzl file:
 
 ```python
-# load bazel and gazelle rules
+# load Bazel and Gazelle rules
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
@@ -608,7 +608,7 @@ http_archive(
 This example is from the cockroach database operator project. You can see
 the full definition [here](https://github.com/cockroachdb/cockroach-operator/blob/0ef4d1e1b4c94a8edf1393b0fa72d9de8bc21477/WORKSPACE#L20).
 
-Now let's cover what is inside of the BUILD files. As we mentioned, bazel rules are in essence, 
+Now let's cover what is inside of the BUILD files. As we mentioned, Bazel rules are in essence, 
 StarLark libraries.
 
 ### The BUILD files
@@ -622,9 +622,9 @@ The rules_go has several "Core rules" defined.  These include:
 - go_path
 
 See [here](https://github.com/bazelbuild/rules_go/blob/master/docs/go/core/rules.md) for more details.
-And these StarLark rules are used inside of the BUILD files, and are often updated automatically by gazelle.
+And these StarLark rules are used inside of the BUILD files, and are often updated automatically by Gazelle.
 
-After we ran gazelle, the BUILD.bazel file was updated to include two new StarLark definitions:
+After we ran Gazelle, the BUILD.bazel file was updated to include two new StarLark definitions:
 
 ```python
 go_library(
@@ -671,7 +671,7 @@ an external dependency using cobra.
 
 ### How these files work together
 
-The WORKSPACE, dep.bzl, and BUILD.bazel files create an object graph that bazel uses.
+The WORKSPACE, dep.bzl, and BUILD.bazel files create an object graph that Bazel uses.
 The blog [post](https://blog.bazel.build/2015/06/17/visualize-your-build.html) covers
 visualizing the object graph.  Take a peak if you want to learn a bit about
 "bazel query".
@@ -685,7 +685,7 @@ http_archive(
 ```
 
 We are not including the full call for brevity. This http_archive definition tells
-bazel to download and use a specific version of rules_go. If you look at the BUILD.bazel file in the
+Bazel to download and use a specific version of rules_go. If you look at the BUILD.bazel file in the
 root directory you can see the "load" command for rules_go, which exports go_libary.
 
 ```python
@@ -704,8 +704,8 @@ files load those rules and use one of the definitions in the rules.
 
 
 The same kind of object graph is used for external dependencies. The WORKSPACE file includes the
-definition for gazelle (http_archive) and an import for the deps.bzl file. The deps.bzl file
-includes load definitions for the gazelle "go_repository" rule.   The go_repository rules define various
+definition for Gazelle (http_archive) and an import for the deps.bzl file. The deps.bzl file
+includes load definitions for the Gazelle "go_repository" rule.   The go_repository rules define various
 external go dependencies that are then vendored.  One of those dependencies is cobra, which is used
 as a dependency by all of the go files inside of the cmd directory. Inside of the BUILD.bazel file, located in the cmd 
 directory, the "deps" are a parameter passed in the go_libary rule.
@@ -714,28 +714,28 @@ directory, the "deps" are a parameter passed in the go_libary rule.
     deps = ["@com_github_spf13_cobra//:go_default_library"],
 ```
 
-So bazel now has the capability to:
+So Bazel now has the capability to:
 
 - Build an object graph for the project
 - Various rules are defined that impact the object tree
-- go_rules, and gazelle define various rules
-- the bazel object tree includes go_libary rules
-- external dependencies are defined in go_repository rules
+- go_rules, and Gazelle define various rules
+- The Bazel object tree includes go_libary rules
+- External dependencies are defined in go_repository rules
 - deps are passed into go_libary rules
 
-All of these definitions create a dependency graph that allows bazel to run:
+All of these definitions create a dependency graph that allows Bazel to run:
 
 ```bash
 $ bazelisk build //...
 ```
 
-We the command is executed, bazel will download and cache all dependencies, including but not limited to:
+We the command is executed, Bazel will download and cache all dependencies, including but not limited to:
 
 - The defined GoLang compiler and libraries
 - The defined rules sets
 - build the go binary
 
-Downloading and caching the above components is part of bazel providing hermetic and
+Downloading and caching the above components is part of Bazel providing hermetic and
 deterministic builds.  All of the downloaded components are checked against an SHA that 
 verifies the checksum of the downloaded file(s) checksum.
 
@@ -778,7 +778,7 @@ You have edited the following files.
         └── roll_dice.go
 ```
 
-We now need to update the BUILD.bazel files, and the easiest way to do this is to run gazelle.
+We now need to update the BUILD.bazel files, and the easiest way to do this is to run Gazelle.
 
 Execute the following command:
 
@@ -808,7 +808,7 @@ roll called
 roll dice
 ```
 
-Running the gazelle target modified the Build.bazel file under the cmd directory.  Here is the diff.
+Running the Gazelle target modified the Build.bazel file under the cmd directory.  Here is the diff.
 
 ```diff
 diff --git a/cmd/BUILD.bazel b/cmd/BUILD.bazel
@@ -861,7 +861,7 @@ index d7d00bb..cddc748 100644
  }
 ```
 
-We added the import and the call to `word.GenerateWord()`. Again we can run gazelle 
+We added the import and the call to `word.GenerateWord()`. Again we can run Gazelle 
 to add the new dep to the BUILD.bazel file. 
 
 ```bash
@@ -888,7 +888,7 @@ index ac66183..891b0e1 100644
  )
 ```
 
-We can use bazel to execute the binary with the new changes.
+We can use Bazel to execute the binary with the new changes.
 
 ```bash
 $ bazelisk run //:go-code-tutorial word
@@ -955,7 +955,7 @@ index 312a267..37215cf 100644
 I also cleaned up the Println to add some clarity.
 
 Once that code change is done, we need to run go mod to update the project's 
-dependencies. We can use bazel to run the Go binary instead of having
+dependencies. We can use Bazel to run the Go binary instead of having
 to installing the Go SDK ourselves.  The Go rules have already downloaded
 the Go SDK, so use the following command.
 
@@ -963,17 +963,17 @@ the Go SDK, so use the following command.
 $ bazelisk run @go_sdk//:bin/go -- mod tidy
 ```
 
-Keeping go.mod updated allows us to either use go directly or bazel to build
+Keeping go.mod updated allows us to either use go directly or Bazel to build
 and run the code.
 
-We now need to update the Bazel import, and the easiest way to do this is to run gazelle.
+We now need to update the Bazel import, and the easiest way to do this is to run Gazelle.
 
 ```bash
 $ bazelisk run //:gazelle-update-repos
 $ bazelisk run //:gazelle
 ```
 
-The first bazel command updated the deps.bzl file. The second command
+The first Bazel command updated the deps.bzl file. The second command
 updates the BUILD.bazel file in pkg/word.  Below is the diff of the 
 updates.
 
@@ -992,7 +992,7 @@ index c974b0b..e5c0b28 100644
 ```
 
 You can see the deps is now updated and points to the external repo "@com_github_tjarratt_babble//:babble".
-The "@" references an external code base that bazel will download so that the Go SDK can build
+The "@" references an external code base that Bazel will download so that the Go SDK can build
 the code.
 
 This GitHub repo is defined in deps.bzl file in the following go_repository stanza.
@@ -1027,8 +1027,8 @@ One of the things that you may notice is that you do not have to run "bazel buil
 Bazel will notice that the code is not built, and will run the "build" phase for you automatically.
 
 To recap what we have done.  We have modified our code to use the babble Go code on 
-GitHub.  We then use bazel to run go mod, which updates go.mod file. Next we ran the targets gazelle-update-repos and gazelle
-with bazel. The first bazel alias updated the deps.bzl file with the external dependency and the gazelle target 
+GitHub.  We then use Bazel to run go mod, which updates go.mod file. Next we ran the targets gazelle-update-repos and gazelle
+with Bazel. The first Bazel alias updated the deps.bzl file with the external dependency and the Gazelle target 
 updated the deps section in pkg/word/BUILD.bazel.  Bazel can then download the external dependency
 and use that dependency when our example Go program is compiled.
 
@@ -1036,7 +1036,7 @@ How about we add a Go unit test so we can run "bazel test"?
 
 ## Go tests
 
-As we mentioned bazel support running code tests, as defined in bazel rules. One of the rules from go_rules
+As we mentioned Bazel support running code tests, as defined in Bazel rules. One of the rules from go_rules
 is go_test.  Now let's add a test.
 
 First, refactor the func GenerateWord in the Go file pkg/word/generate.go to return a string rather than printing it.
@@ -1088,9 +1088,9 @@ func TestGenerateWord(t *testing.T) {
 }
 ```
 
-We have a unit test now, but bazel does not know about it.  Again we need 
-bazel to have the target in its object graph, and to do that, we need
-to update the BUILD.bazel file.  The easiest way to do that is with gazelle.
+We have a unit test now, but Bazel does not know about it.  Again we need 
+Bazel to have the target in its object graph, and to do that, we need
+to update the BUILD.bazel file.  The easiest way to do that is with Gazelle.
 
 Simply run:
 
@@ -1198,7 +1198,7 @@ grebes-slickness's
 FAIL
 ```
 
-Adding the "test_ouput" argument to the bazel test command will output the test results to the console.
+Adding the "test_ouput" argument to the Bazel test command will output the test results to the console.
 
 ```bash
 $ bazelisk test --test_output=errors //...
@@ -1225,7 +1225,7 @@ INFO: Build completed, 1 test FAILED, 2 total actions
 
 If you like you can change the "if" statement back so that the unit test passes.
 
-So now we know how to include a new unit test, update BUILD.bazel rules with gazelle, and then run the test.
+So now we know how to include a new unit test, update BUILD.bazel rules with Gazelle, and then run the test.
 
 ## Other rules in rules_go
 
@@ -1233,7 +1233,7 @@ The rules_go [documentation](https://github.com/bazelbuild/rules_go#documentatio
 rules provided in the ruleset.
 
 We have covered three of the top rules 'go_binary', 'go_library', and 'go_test'.  We also covered rules that
-gazelle uses to manage dependencies called 'go_repository'.
+Gazelle uses to manage dependencies called 'go_repository'.
 
 Other go_rules rules include
 
@@ -1253,17 +1253,17 @@ Other capabilities of go_rules include:
 
 And lastly, you probably know that Go supports cross-compilation, and this is really nice when we are developing with containers.  Within rules_go they 
 have included go_cross_binary, which allows you to define the creation of a binary for a specific operating system and CPU architecture. This
-can allow us to develop on a Mac and run the binary on that Mac, while also building a binary for Linux.  We then would use a set of bazel
-rules that support the building of containers, and bazel can put the Linux binary in the container.
+can allow us to develop on a Mac and run the binary on that Mac, while also building a binary for Linux.  We then would use a set of Bazel
+rules that support the building of containers, and Bazel can put the Linux binary in the container.
 
 ## Summary
 
 - Bazel supports the building and testing of the Go programming language using the rules_go ruleset.
 - Initially, you need to create a basic WORKSPACE and BUILD.bazel file in the root directory of your project.
-- You can use gazelle to create and maintain various bazel files.
-- Gazelle can update various bazel files when you add a new go file or go tests.
+- You can use Gazelle to create and maintain various Bazel files.
+- Gazelle can update various Bazel files when you add a new go file or go tests.
 - Bazel supports many commands, and we covered the build, run and test commands.
-- Bazel uses an object graph that is based on WORKSPACE, BUILD.bazel, and other bazel files.
+- Bazel uses an object graph that is based on WORKSPACE, BUILD.bazel, and other Bazel files.
 - The ruleset rules_go provides various rules like go_binary, go_libary and go_test.  They are used
 to build binaries, libraries, and support unit testing.
 - Gazelle can update BUILD.bazel and dep.bzl files with either internal or external Go dependencies.
