@@ -62,8 +62,8 @@ these files, if you maintain the files by hand.  Gazelle was created to reduce t
 >
 >  -- <cite>https://github.com/bazelbuild/bazel-gazelle#gazelle-build-file-generator</cite> 
 
-// TODO list languages
-Intially gazelle was created to support Go, and now supports many other languages.
+Intially gazelle was created to support Go, and now supports many other languages. These 
+languages include but are not limited to Haskell, Java, JavaScript/TypeScript, Python, R, StarLark, and Go.
 
 Part of learning Bazel is understanding the configuration language that Bazel uses.
 The language is called [StarLark](https://github.com/bazelbuild/starlark).
@@ -127,22 +127,23 @@ the final source code base.
 The we are using the [cobra](https://cobra.dev/) CLI framework for this project.
 The cobra framework is commonly used by various projects including Kubernetes.
 The cobra-cli binary is provided by the project for the intial generation of CLI code.
-// TODO include the go call and mentioned the docs if then need them.
 
+```bash
+$ go install github.com/spf13/cobra-cli@latest
+```
 Follow the (instructions)[https://github.com/spf13/cobra-cli/blob/main/README.md] and install
 cobra-cli.
 
 In the root directory of your project use go mod and init the code vendoring.
 
-// TODO what code formatting is supported.
-```
+```bash
 $ go mod init github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial
 ```
 
 Next use cobra-cli to create go root, rool and word files. Replace 
 the NAME variable with your information.
 
-```
+```bash
 $ export NAME="Your Name your@email.com"
 $ cobra-cli init -a '${NAME}' --license apache
 $ cobra-cli add roll -a '${NAME}' --license apache
@@ -165,15 +166,15 @@ You will now have the following files:
 
 Let's add a couple of directories:
 
-```
-mkdir -p pkg/{word,roll}
+```bash
+$ mkdir -p pkg/{word,roll}
 ```
 
 Inside of those directories we can add roll_dice.go and generate_word.go files.
 
 In the roll_dice.go file add the following code:
 
-```
+```go
 package roll
 
 import "fmt"
@@ -185,7 +186,7 @@ func Roll() {
 
 In the generate_word.go file add the the following code:
 
-```
+```go
 package word
 
 import "fmt"
@@ -194,6 +195,7 @@ func GenerateWord() {
         fmt.Println("GenerateWord")
 }
 ```
+
 You will end up with the following file structure:
 
 ```
@@ -213,7 +215,7 @@ You will end up with the following file structure:
 
 Next add a .gitignore file by running the following command.
 
-```
+```bash
 $ tee -a .gitignore << EOF
 /bazel-$(basename $(pwd))
 /bazel-bazel-gazelle
@@ -259,7 +261,7 @@ Use your favorite editor and create a file named "WORKSPACE" in the root directo
 Edit the WORKSPACE file and include the following StarLark code.
 
 
-```
+```python
 # use http_archive to download bazel rules_go
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -321,7 +323,7 @@ Next we need to a BUILD (BUILD.bazel) file in the root project directory.
 Open your editor and create a file named BUILD.bazel. Write the following contents to the BUILD.bazel
 file:
 
-```
+```python
 # Load the gazelle rule
 load("@bazel_gazelle//:def.bzl", "gazelle")
 
@@ -357,13 +359,13 @@ The last rule that we defined is named "gazelle-update-repos".  This is a custom
 SkyLark definition that defines a gazelle command, and specific arguments to that command.
 Do not run this command yet, but this allows us to run:
 
-```
+```bash
 $ bazelisk run //:gazelle-update-repos
 ```
 
 Which is the equivilent of running
 
-```
+```bash
 $ bazelist run //:gazelle update-repos -from_file=go.mod -to_macro=deps.bzl%go_dependencies -prune
 ```
 
@@ -388,7 +390,7 @@ Run the following commands to update the root BUILD.bazel,
 the WORKSPACE file, and generate the other BUILD.bazel
 files for the project.
 
-```
+```bash
 $ bazelisk run //:gazelle
 $ bazelisk run //:gazelle-update-repos
 ```
@@ -458,19 +460,19 @@ execs a rule, for instance executes a go binary.
 
 In the project you can run:
 
-```
+```bash
 $ bazelisk build //...
 ```
 
 This will build the binary for our example project. We can run the binary that bazel
 creates with the following command:
 
-```
+```bash
 $ bazelisk run //:go-code-tutorial
 ```
 You can also pass in the command line option "word" that we defined to the bazel run command.
 
-```
+```bash
 $ bazelisk run //:go-code-tutorial word
 ```
 
@@ -534,7 +536,7 @@ The below table provides a great guide for targets:
 If we look in the BUILD.bazel file in the root directory will will find a go_libary rule
 named go-code-tutorial_lib, and this is a target we can build.
 
-```
+```bash
 $ bazelisk build //:go-code-tutorial_lib
 ```
 
@@ -543,13 +545,13 @@ the name may differ.
 
 We can also run the go-code-tutorial binary target using the following command:
 
-```
+```bash
 $ bazelisk run //:go-code-tutorial word
 ```
 
 Or we can build all of the targets under the pkg directory:
 
-```
+```bash
 $ bazelisk build //pkg/...
 ```
 
@@ -582,7 +584,7 @@ it is defined as a refernce in the WORKSPACE file.
 
 Each of the following lines within the WORKSPACE file defines the location of the deps.bz file:
 
-```
+```python
 # load bazel and gazelle rules
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
@@ -595,10 +597,11 @@ load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
 load("//:deps.bzl", "go_dependencies")
 ```
+
 One challenge you can run into is that you need to manually override a dependency, and  you can
 do this listing the http_archive. Below we have an example of overriding the buildtools dependency.
 
-```
+```python
 http_archive(
     name = "com_github_bazelbuild_buildtools",
     sha256 = "a02ba93b96a8151b5d8d3466580f6c1f7e77212c4eb181cba53eb2cae7752a23",
@@ -630,7 +633,7 @@ And these StarLark rules are used inside of the BUILD files, and often updated a
 
 After we ran gazelle the BUILD.bazel file was updated to include two new StarLark definitions:
 
-```
+```python
 go_library(
     name = "go-code-tutorial_lib",
     srcs = ["main.go"],
@@ -651,7 +654,7 @@ Both the go_libary and go_binary rules are defined for our code. The go_libary r
 More BUILD.bazel files where also created. Here is the BUILD.bazel file that was created in 
 the cmd folder.
 
-```
+```python
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
@@ -692,7 +695,7 @@ We are not including the full call for the sake of brevity. This http_archive de
 bazel to download and use a specific version of rules_go. If you look at the BUILD.bazel file in the
 root directory you can see load command for rules_go, which exports go_libary.
 
-```
+```python
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 ```
 
@@ -716,7 +719,7 @@ external go dependencies that are then vendored.  One of those dependencies is c
 as a dependecy by all of the go files inside of the cmd directory. Inside of the BUILD.bazel file in the cmd 
 directory the a "deps" are a parameter passed in the go_libary rule.
 
-```
+```python
     deps = ["@com_github_spf13_cobra//:go_default_library"],
 ```
 
@@ -731,9 +734,8 @@ So now we have the capabilty for bazel to:
 
 All of these definitions create an dependency graph that allows bazel to run:
 
-```
+```bash
 $ bazelisk build //...
-
 ```
 
 We the command is executed, bazel will download and cache all dependencies including but not limited to:
@@ -757,7 +759,7 @@ Edit roll.go under the cmd folder and add an import to roll_dice.
 
 You will now have:
 
-```
+```go
 import (
     "fmt"
 
@@ -768,7 +770,7 @@ import (
 
 Then call `roll.Roll()` after the `fmt.Println` statement. This will give you:
 
-```
+```go
    Run: func(cmd *cobra.Command, args []string) {
        fmt.Println("roll called")
        roll.Roll()
@@ -789,12 +791,12 @@ We now need to update the BUILD.bazel files, and the easiest way to do this is t
 
 Execute the following command:
 
-```
+```bash
 $ bazelisk run //:gazelle
 ```
 We can now use bazel to run the binary again:
 
-```
+```bash
 $ bazelisk run //:go-code-tutorial roll
 
 ```
@@ -817,7 +819,7 @@ roll dice
 
 Running the gazelle target modified the Build.bazel file under the cmd directory.  Here is the diff.
 
-```
+```diff
 diff --git a/cmd/BUILD.bazel b/cmd/BUILD.bazel
 index ac66183..9033b86 100644
 --- a/cmd/BUILD.bazel
@@ -840,7 +842,7 @@ Next modify cmd/word.go file to include a call to  `word.GenerateWord()` func.
 
 Here is the diff of the code changes:
 
-```
+```diff
 diff --git a/cmd/word.go b/cmd/word.go
 index d7d00bb..cddc748 100644
 --- a/cmd/word.go
@@ -871,13 +873,13 @@ index d7d00bb..cddc748 100644
 We added the import and the call to `word.GenerateWord()`. Again we can run gazelle 
 add the new dep to the BUILD.bazel file. 
 
-```
+```bash
 $ bazelisk run //:gazelle
 ```
 
 Now we have BUILD.bazel updated. Here is the diff:
 
-```
+```diff
 diff --git a/cmd/BUILD.bazel b/cmd/BUILD.bazel
 index ac66183..891b0e1 100644
 --- a/cmd/BUILD.bazel
@@ -897,7 +899,7 @@ index ac66183..891b0e1 100644
 
 We can use bazel to execute the binary with the new changes.
 
-```
+```bash
 $ bazelisk run //:go-code-tutorial word
 ```
 
@@ -938,7 +940,7 @@ we are refering to:
 
 We need to add the import to the babble libary and call the babble func. Here is the diff after the updates.
 
-```
+```diff
 diff --git a/pkg/word/generate_word.go b/pkg/word/generate_word.go
 index 312a267..37215cf 100644
 --- a/pkg/word/generate_word.go
@@ -966,7 +968,7 @@ dependencies. We can use bazel to run the go binary, instead of having
 to install go and running that binary.  The Go rules have already downloaded
 the Go SDK, so use the following command.
 
-```
+```bash
 $ bazelisk run @go_sdk//:bin/go -- mod tidy
 ```
 
@@ -975,7 +977,7 @@ and run the code.
 
 We now need to update the Bazel import, and the easiest way to do this is to run gazelle again.
 
-```
+```bash
 $ bazelisk run //:gazelle-update-repos
 $ bazelisk run //:gazelle
 ```
@@ -984,7 +986,7 @@ The first bazel command updates deps.bzl file. The second command
 updates the BUILD.bazel file in pkg/word.  Below is the diff of the 
 updates.
 
-```
+```diff
 diff --git a/pkg/word/BUILD.bazel b/pkg/word/BUILD.bazel
 index c974b0b..e5c0b28 100644
 --- a/pkg/word/BUILD.bazel
@@ -1004,7 +1006,7 @@ the code.
 
 This GitHub repo is defined in deps.bzl file in the following go_repository stanza.
 
-```
+```python
 go_repository(
     name = "com_github_tjarratt_babble",
     importpath = "github.com/tjarratt/babble",
@@ -1015,7 +1017,7 @@ go_repository(
 
 We can now run our Go binary and see the changes.
 
-```
+```bash
 $ bazelisk run //:go-code-tutorial word
 INFO: Analyzed target //:go-code-tutorial (0 packages loaded, 0 targets configured).
 INFO: Found 1 target...
@@ -1064,7 +1066,7 @@ Edit cmd/word.go file, and add a Println around the call to GenerateWord().
 
 Here are these changes.
 
-```
+```go
     Run: func(cmd *cobra.Command, args []string) {
         fmt.Println("word called")
         fmt.Println(word.GenerateWord())
@@ -1080,7 +1082,7 @@ $ bazelisk build //...
 Create a new file in the pkg/word directory called generate_word_test.go.
 Include the following code:
 
-```
+```go
 package word
 
 import (
@@ -1101,14 +1103,14 @@ to update the BUILD.bazel file.  The easiest way to do that is with gazelle.
 
 Simply run:
 
-```
+```bash
 $ bazelisk run //:gazelle
 ```
 
 This now updates the the BUILD.bazel file in the pkg/word directory.  Here
 is a diff of the update:
 
-```
+```diff
 diff --git a/pkg/word/BUILD.bazel b/pkg/word/BUILD.bazel
 index e5c0b28..1b79ce0 100644
 --- a/pkg/word/BUILD.bazel
@@ -1134,13 +1136,13 @@ index e5c0b28..1b79ce0 100644
 We now have a [go_test](https://github.com/bazelbuild/rules_go/blob/master/docs/go/core/rules.md#go_test) 
 rule, which is part of the rules_go ruleset. Now we can run:
 
-```
+```bash
 $ bazelisk test //...
 ```
 
 The above command should print out results like:
 
-```
+```bash
 $ bazelisk test //...
 INFO: Analyzed 6 targets (0 packages loaded, 0 targets configured).
 INFO: Found 5 targets and 1 test target...
@@ -1156,7 +1158,7 @@ INFO: Build completed successfully, 1 total action
 You may also notice that the command printed out a target named //pkg/word:word_test.
 We can also run just the specific target:
 
-```
+```bash
 $ bazelisk test //pkg/word:word_test
 ```
 
@@ -1175,7 +1177,7 @@ $ bazelisk test //pkg/word:word_test
 
 We get an output like
 
-```
+```bash
 $ bazelisk test //...
 INFO: Analyzed 6 targets (0 packages loaded, 0 targets configured).
 INFO: Found 5 targets and 1 test target...
@@ -1192,7 +1194,7 @@ INFO: Build completed, 1 test FAILED, 6 total actions
 The line that diplays the path to the test.log file will differ between systems, but it provides output from the unit test.
 If we cat the file we see the results:
 
-```
+```bash
 $ cat /home/clove/.cache/bazel/_bazel_clove/d1fd07b841c26eda93328e4eeaf2336a/execroot/__main__/bazel-out/k8-fastbuild/testlogs/pkg/word/word_test/test.log
 exec ${PAGER:-/usr/bin/less} "$0" || exit 1
 Executing tests from //pkg/word:word_test
@@ -1207,7 +1209,7 @@ FAIL
 
 Adding the "test_ouput" argument to the bazel test command will output the test results to the console.
 
-```
+```bash
 $ bazelisk test --test_output=errors //...
 INFO: Analyzed 6 targets (0 packages loaded, 0 targets configured).
 INFO: Found 5 targets and 1 test target...
