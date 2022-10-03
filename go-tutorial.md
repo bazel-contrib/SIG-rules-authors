@@ -4,11 +4,14 @@ nav_order: 3
 
 # Go and Bazel
 
+// TODO: is Bazel a proper noun?
+
 ## This tutorial covers
 
-- Background of bazel and it's Go support
+- Background of Bazel and Bazel's Go support
+- Covering how rules_go and gazelle are used with Bazel and Go
 - Creating a basic Go project for the tutorial
-- Implementing a WORKSPACE and BUILD.bazel files
+- Implementing a WORKSPACE and BUILD.bazel files 
 - Using gazelle to generate more WORKSPACE and BUILD.bazel updates
 - Utilzing different Bazel commands
 - An overview of gazelle and Go dependency management
@@ -16,24 +19,26 @@ nav_order: 3
 - Creating new internal dependencies and using gazelle to update bazel
 - Adding an a new external Go dependency and the Go vendoring
 - Running and implementing Go tests with bazel
-- Covering other rules in rules_go
+- Learing about other rules in rules_go
 
 ## About Bazel and Go
 
-This tutorial is going to cover how bazel support the programming language Go.
+This tutorial is going to cover how Bazel supports the programming language Go.
+[Bazel](https://bazel.build) is an open-source build and test application that supports 
+the software development lifecycle. Bazel strives to allow a developer to have hermetic and 
+deterministic builds, testing, packaging and deployment.  This build tool supports 
+multiple languages and cross compilation for different operating systems and hardware architecture.
 
-[Bazel](https://bazel.build) is an open-source build and test application that supports the software development lifecycle. Bazel strives
-to allow a developer to have hermetic and deterministic builds, testing, packaging and deployment.  This build
-tool supports multiple languages and builds binaries for multiple platforms.
-
-Of the multiple languages that bazel supports includes [Go](https://go.dev). Go is an open-source programming languages
-that was created by Google.
+One of software languages that Bazel supports includes [Go](https://go.dev). Go is an open-source 
+programming language that was created by Google. Now that we have some background about Bazel
+now lets cover some Bazel concepts.
 
 One of the concepts within bazel is a rule.  A bazel rule defines a series of actions and outputs. Toolchains is another
 concept/part of bazel. The toolchain framework, is a way for rule authors to decouple their rule logic from 
-platform-based selection of tools. So we need a rule (or rule set) that provides a toolchain to support a programming
-language.  The bazel open-source community maintains [rules_go](https://github.com/bazelbuild/rules_go).  These rules
-provides the following support:
+platform-based selection of tools. So we need a rule, or usually a set of rules
+(ruleset) that provides a toolchain to support a programming language.  
+The bazel open-source community maintains
+[rules_go](https://github.com/bazelbuild/rules_go).  This ruleset provides the following support:
 
 - Building go libraries, binaries, and tests
 - Vendoring and dependency management
@@ -57,9 +62,10 @@ these files, if you maintain the files by hand.  Gazelle was created to reduce t
 >
 >  -- <cite>https://github.com/bazelbuild/bazel-gazelle#gazelle-build-file-generator</cite> 
 
+// TODO list languages
 Intially gazelle was created to support Go, and now supports many other languages.
 
-A lot of understand bazel well is understanding the configuration language that bazel uses.
+Part of learning Bazel is understanding the configuration language that Bazel uses.
 The language is called [StarLark](https://github.com/bazelbuild/starlark).
 
 > Starlark (formerly known as Skylark) is a language intended for use as a configuration language. It was designed for the Bazel build system, but may be useful for other projects as well. This repository is where Starlark features are proposed, discussed, and specified. It contains information about the language, including the specification. There are multiple implementations of Starlark.
@@ -70,8 +76,8 @@ The language is called [StarLark](https://github.com/bazelbuild/starlark).
 The good news is that Starlark is a dialect of Python, almost a subset of the language.  If you know
 Python you have a jump start on learning Starlark.
 
-Before we start going through rules_go and gazelle we are going to cover a couple of dependencies for this 
-tutorial and create a simple Go project.
+Before we start going through creating a simple Go project we are going to cover a couple of dependencies for this 
+tutorial.
 
 ## Dependencies for the tutorial
 
@@ -81,20 +87,24 @@ We use the following dependencies for this tutorial.
 - gcc: use your systems package manager
 - bazelisk: https://github.com/bazelbuild/bazelisk#installation
 
-Technically we do not need the go binary installed, but we are going to use
+Technically we do not need the go binary installed, to use Bazel, but we are going to use
 `cobra-cli` to generate some project code.  We did not want to add the 
-extract work in bazel to run the binary using bazel. A developer, using go,
-does not need to download the go binary. In order to keep a build deterministic
+extra work to run the binary using Bazel. A developer, using go,
+does not need to download the go binary.  In order to keep a build deterministic
 bazel and rules_go download go. rules_go require that gcc is installed.
 
-We are not installing bazel for this tutorial, but are using Bazelisk.
-Bazelisk is a wrapper for Bazel written in Go. It automatically picks a good 
-version of Bazel given your current working directory, downloads it from 
+We are not installing bazel by hand for this tutorial, but are using Bazelisk.
+Bazelisk is a wrapper for Bazel written in Go. It automatically picks the
+correct version of Bazel given your current working directory, downloads it from 
 the official server (if required) and then transparently passes through all 
 command-line arguments to the real Bazel binary.  You can call it just 
 like you would call Bazel.
 
-Now how about we actually write some code!
+Now how about we actually write some code! We are going to create a
+simple Go program and then add Bazel to the project.  We have
+structured the tutorial in this manner since at times you migrate
+to using Bazel with an existing project, and at other times you
+start a new project with Bazel.
 
 ## The project
 
@@ -102,7 +112,9 @@ We are going to create a small example project first using go.  As
 we mentioned you do not need to use go directly at all, when using bazel.
 But to get a "easy" jump start we wanted to quickly generate some code.
 
-The project is going to consist of a simple cli program that rolls a
+// TODO finish the code to do that?
+
+The project is going to consist of a simple cli program that generates a
 random number or generates a random word.
 
 ## Generate the project framework
@@ -111,14 +123,19 @@ First create a git repository to store you work.  For this project we are using
 https://github.com/chrislovecnm/bazel-go-example-code, and replace any references
 to that repository with your own.
 
+// TODO mention the repo that has all of the code.
+
 The we are using the [cobra](https://cobra.dev/) CLI framework for this project.
-cobra is commonly used by various projects including Kubernetes.
-The cobra-cli binary is provided by the spf13/cobra project for the intial generation of CLI code.
-Follow the (install instructions)[https://github.com/spf13/cobra-cli/blob/main/README.md] and install
+The cobra framework is commonly used by various projects including Kubernetes.
+The cobra-cli binary is provided by the project for the intial generation of CLI code.
+// TODO include the go call and mentioned the docs if then need them.
+
+Follow the (instructions)[https://github.com/spf13/cobra-cli/blob/main/README.md] and install
 cobra-cli.
 
 In the root directory of your project use go mod and init the code vendoring.
 
+// TODO what code formatting is supported.
 ```
 $ go mod init github.com/chrislovecnm/bazel-go-example-code
 ```
@@ -195,7 +212,7 @@ You will end up with the following file structure:
         └── generate_word.go
 ```
 
-Next build a .gitignore file:
+Next add a .gitignore file by running the following command.
 
 ```
 $ tee -a .gitignore << EOF
@@ -221,7 +238,9 @@ about them here:
 - https://github.com/bazelbuild/rules_go
 - https://github.com/bazelbuild/bazel-gazelle
 
-So we define rules_go SkyLark for bazel and we use gazelle to manage our BUILD.bazel files.
+At a high level we use Skylark to define that bazel will use rules from rules_go
+to create the Go support within a project. We use gazelle to manage our BUILD.bazel files,
+or WORKSPACE files, and other bazel specific files.
 
 If you are not familiar with BUILD.bazel files or WORKSPACE files take a look at:
 https://bazel.build/concepts/build-files
@@ -230,7 +249,7 @@ Next let's create our WORKSPACE file so that bazel knows it is using rules_go an
 
 ## Create WORKSPACE file
 
-We now need to create the bazel WORKSPACE file. The [StarLark](https://bazel.build/rules/language) is
+The [StarLark](https://bazel.build/rules/language) is
 used within WORKSPACE and BUILD.bazel files. The definitions within the WORKSPACE files include StarkLark
 code for both rules_go and gazelle.
 
@@ -744,7 +763,7 @@ Then call `roll.Roll()` after the `fmt.Println` statement. This will give you:
    },
 ```
 
-You have editted the following files.
+You have edited the following files.
 
 ```
 ├── cmd
