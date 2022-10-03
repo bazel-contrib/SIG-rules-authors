@@ -4,8 +4,6 @@ nav_order: 3
 
 # Go and Bazel
 
-// TODO: is Bazel a proper noun?
-
 ## This tutorial covers
 
 - Background of Bazel and Bazel's Go support
@@ -112,8 +110,6 @@ We are going to create a small example project first using go.  As
 we mentioned you do not need to use go directly at all, when using bazel.
 But to get a "easy" jump start we wanted to quickly generate some code.
 
-// TODO finish the code to do that?
-
 The project is going to consist of a simple cli program that generates a
 random number or generates a random word.
 
@@ -166,7 +162,7 @@ You will now have the following files:
 
 Let's add a couple of directories:
 
-```bash
+```console
 $ mkdir -p pkg/{word,roll}
 ```
 
