@@ -120,10 +120,9 @@ random number or generates a random word.
 ## Generate the project framework
 
 First create a git repository to store you work.  For this project we are using
-https://github.com/chrislovecnm/bazel-go-example-code, and replace any references
-to that repository with your own.
-
-// TODO mention the repo that has all of the code.
+https://github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial, and replace any references
+to that repository with your own. You can refer to the above repository for 
+the final source code base.
 
 The we are using the [cobra](https://cobra.dev/) CLI framework for this project.
 The cobra framework is commonly used by various projects including Kubernetes.
@@ -137,7 +136,7 @@ In the root directory of your project use go mod and init the code vendoring.
 
 // TODO what code formatting is supported.
 ```
-$ go mod init github.com/chrislovecnm/bazel-go-example-code
+$ go mod init github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial
 ```
 
 Next use cobra-cli to create go root, rool and word files. Replace 
@@ -332,7 +331,7 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 
 # Modify the name to your project name in your git repository.
 
-# gazelle:prefix github.com/chrislovecnm/bazel-go-example-code
+# gazelle:prefix github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial
 gazelle(name = "gazelle")
 
 # Add a rule to call gazelle and pull in new go dependencies.
@@ -630,7 +629,7 @@ After we ran gazelle the BUILD.bazel file was updated to include two new StarLar
 go_library(
     name = "bazel-go-example-code_lib",
     srcs = ["main.go"],
-    importpath = "github.com/chrislovecnm/bazel-go-example-code",
+    importpath = "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial",
     visibility = ["//visibility:private"],
     deps = ["//cmd"],
 )
@@ -657,7 +656,7 @@ go_library(
         "root.go",
         "word.go",
     ],
-    importpath = "github.com/chrislovecnm/bazel-go-example-code/cmd",
+    importpath = "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/cmd",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_spf13_cobra//:cobra",
@@ -749,7 +748,7 @@ You will now have:
 import (
     "fmt"
 
-    "github.com/chrislovecnm/bazel-go-example-code/pkg/roll"
+    "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/pkg/roll"
     "github.com/spf13/cobra"
 )
 ```
@@ -812,7 +811,7 @@ index ac66183..9033b86 100644
 +++ b/cmd/BUILD.bazel
 @@ -9,5 +9,8 @@ go_library(
      ],
-     importpath = "github.com/chrislovecnm/bazel-go-example-code/cmd",
+     importpath = "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/cmd",
      visibility = ["//visibility:public"],
 -    deps = ["@com_github_spf13_cobra//:cobra"],
 +    deps = [
@@ -843,7 +842,7 @@ index d7d00bb..cddc748 100644
  import (
         "fmt"
 
-+       "github.com/chrislovecnm/bazel-go-example-code/pkg/word"
++       "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/pkg/word"
         "github.com/spf13/cobra"
  )
 
@@ -868,7 +867,7 @@ index ac66183..891b0e1 100644
 +++ b/cmd/BUILD.bazel
 @@ -9,5 +9,9 @@ go_library(
      ],
-     importpath = "github.com/chrislovecnm/bazel-go-example-code/cmd",
+     importpath = "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/cmd",
      visibility = ["//visibility:public"],
 -    deps = ["@com_github_spf13_cobra//:cobra"],
 +    deps = [
@@ -970,7 +969,7 @@ index c974b0b..e5c0b28 100644
 +++ b/pkg/word/BUILD.bazel
 @@ -5,4 +5,5 @@ go_library(
      srcs = ["generate_word.go"],
-     importpath = "github.com/chrislovecnm/bazel-go-example-code/pkg/word",
+     importpath = "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/pkg/word",
      visibility = ["//visibility:public"],
 +    deps = ["@com_github_tjarratt_babble//:babble"],
  )
