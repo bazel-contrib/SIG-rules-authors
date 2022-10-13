@@ -115,7 +115,7 @@ random number or generates a random word.
 ## Generate the project framework
 
 First, create a git repository to store your work.  For this project, we are using
-<https://github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial>, and replace any references
+<https://github.com/bazelbuild/rules_go/examples/go-code-tutorial/>, and replace any references
 to that repository with your own. You can refer to the above repository for 
 the final source code base.
 
@@ -134,8 +134,11 @@ more details.
 In the root directory of your project use `go mod` and init the code vendoring.
 
 ```bash
-$ go mod init github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial
+$ go mod init github.com/bazelbuild/rules_go/examples/go-code-tutorial
 ```
+
+Replace the above path, with the path you are using for your source
+code.
 
 Next use cobra-cli to create go root, root, and word files. Replace 
 the NAME variable with your information.
@@ -322,7 +325,7 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 # This is a critical definition, and if you mess this up all of the BUILD file generation 
 # will have errors.
 
-# Modify the name to your project name in your git repository.
+# Modify the prefix to your project name in your git repository.
 
 # gazelle:prefix github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial
 gazelle(name = "gazelle")
