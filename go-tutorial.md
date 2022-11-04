@@ -115,9 +115,9 @@ random number or generates a random word.
 ## Generate the project framework
 
 First, create a git repository to store your work.  For this project, we are using
-<https://github.com/bazelbuild/rules_go/examples/go-code-tutorial/>, and replace any references
-to that repository with your own. You can refer to the above repository for 
-the final source code base.
+<https://github.com/lionkube/rules_go/tree/tutorial/examples/go-code-tutorial/>, 
+and replace any references to that repository with your own. You can refer to 
+the above repository for the final source code base.
 
 We are using the [cobra](https://cobra.dev/) CLI framework for this project.
 The cobra framework is commonly used by various projects including Kubernetes.
