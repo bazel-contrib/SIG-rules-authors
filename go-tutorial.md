@@ -6,6 +6,9 @@ nav_order: 3
 
 ## This tutorial covers
 
+<!-- TODO rename -->
+<!--    "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/pkg/roll" -->
+
 - Background of Bazel and Bazel's Go support
 - Covering the use of rules_go with Bazel and Go
 - Creating a basic Go project for the tutorial
@@ -110,7 +113,7 @@ we mentioned you do not need to use go directly at all when using Bazel.
 But to get an "easy" jump start we wanted to quickly generate some code.
 
 The project is going to consist of a simple CLI program that generates a
-random number or generates a random word.
+random number.
 
 ## Generate the project framework
 
@@ -137,14 +140,13 @@ In the root directory of your project use `go mod` and init the code vendoring.
 $ go mod init github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial
 ```
 
-Next use cobra-cli to create go root, root, and word files. Replace 
+Next use cobra-cli to create go root, root, and roll files. Replace 
 the NAME variable with your information.
 
 ```bash
 $ export NAME="Your Name your@email.com"
 $ cobra-cli init -a '${NAME}' --license apache
 $ cobra-cli add roll -a '${NAME}' --license apache
-$ cobra-cli add word -a '${NAME]' --license apache
 ```
 
 Run the above commands in the root directory of your project.
@@ -154,42 +156,40 @@ You will now have the following files:
 ```
 ├── cmd
 │   ├── roll.go
-│   ├── root.go
-│   └── word.go
+│   └── root.go
 ├── go.mod
 ├── go.sum
 └── main.go
 ```
 
-Let's add a couple of directories:
+Let's add a directory:
 
 ```console
-$ mkdir -p pkg/{word,roll}
+$ mkdir -p pkg/roll
 ```
 
-Inside of those directories, we can add roll_dice.go and generate_word.go files.
+Inside of those directories, we can add the roll_dice.go file.
 
 In the roll_dice.go file add the following code:
 
 ```go
 package roll
 
-import "fmt"
+import (
+        "math/rand"
+        "strconv"
+        "time"
+)
 
-func Roll() {
-        fmt.Println("roll dice")
+func Roll() string {
+        fmt.Println("rolling the dice")
+        return generateNumber()
 }
-```
 
-In the generate_word.go file add the following code:
-
-```go
-package word
-
-import "fmt"
-
-func GenerateWord() {
-        fmt.Println("GenerateWord")
+func generateNumber() string {
+        source := rand.NewSource(time.Now().UnixNano())
+        random := rand.New(source)
+        return strconv.Itoa(random.Intn(100))
 }
 ```
 
@@ -198,16 +198,13 @@ You will end up with the following file structure:
 ```
 ├── cmd
 │   ├── roll.go
-│   ├── root.go
-│   └── word.go
+│   └── root.go
 ├── go.mod
 ├── go.sum
 ├── main.go
 └── pkg
-    ├── roll
-    │   └── roll_dice.go
-    └── word
-        └── generate_word.go
+    └── roll
+        └── roll_dice.go
 ```
 
 Next add a .gitignore file by running the following command.
@@ -215,7 +212,6 @@ Next add a .gitignore file by running the following command.
 ```bash
 $ tee -a .gitignore << EOF
 /bazel-$(basename $(pwd))
-/bazel-bazel-gazelle
 /bazel-bin
 /bazel-out
 /bazel-testlogs
@@ -400,19 +396,15 @@ You now have the following files:
 ├── cmd
 │   ├── BUILD.bazel
 │   ├── roll.go
-│   ├── root.go
-│   └── word.go
+│   └── root.go
 ├── deps.bzl
 ├── go.mod
 ├── go.sum
 ├── main.go
 └── pkg
-    ├── roll
-    │   ├── BUILD.bazel
-    │   └── roll_dice.go
-    └── word
+    └── roll
         ├── BUILD.bazel
-        └── generate_word.go
+        └── roll_dice.go
 ```
 
 We now have new BUILD.bazel files in the cmd and pkg directories.
@@ -431,10 +423,7 @@ and created new BUILD files as well. Here is a layout of the Bazel files in the 
 │   ├── BUILD.bazel
 ├── deps.bzl
 └── pkg
-    ├── roll
-    │   ├── BUILD.bazel
-    │   └── BUILD.bazel
-    └── word
+    └── roll
         └── BUILD.bazel
 ```
 
@@ -465,10 +454,10 @@ creates with the following command:
 ```bash
 $ bazelisk run //:go-code-tutorial
 ```
-You can also pass in the command line option "word" that we defined to the Bazel run command.
+You can also pass in the command line option "roll" that we defined to the Bazel run command.
 
 ```bash
-$ bazelisk run //:go-code-tutorial word
+$ bazelisk run //:go-code-tutorial roll
 ```
 
 We will cover the "test" command later as we do not have any tests defined
@@ -541,7 +530,7 @@ the name may differ.
 We can also run the go-code-tutorial binary target using the following command:
 
 ```bash
-$ bazelisk run //:go-code-tutorial word
+$ bazelisk run //:go-code-tutorial roll
 ```
 
 Or we can build all of the targets under the pkg directory:
@@ -657,7 +646,6 @@ go_library(
     srcs = [
         "roll.go",
         "root.go",
-        "word.go",
     ],
     importpath = "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/cmd",
     visibility = ["//visibility:public"],
@@ -766,7 +754,7 @@ Then call `roll.Roll()` after the `fmt.Println` statement. This will give you:
 ```go
    Run: func(cmd *cobra.Command, args []string) {
        fmt.Println("roll called")
-       roll.Roll()
+       fmt.Println(roll.Roll())
    },
 ```
 
@@ -831,40 +819,7 @@ index ac66183..9033b86 100644
 
 The line was added inside of the deps stanza that points to the package where roll.go resides.
 
-Next, modify cmd/word.go file to include a call to  `word.GenerateWord()` func.
-
-Here is the diff of the code changes:
-
-```diff
-diff --git a/cmd/word.go b/cmd/word.go
-index d7d00bb..cddc748 100644
---- a/cmd/word.go
-+++ b/cmd/word.go
-@@ -1,12 +1,12 @@
- /*
- Copyright © 2022 NAME HERE <EMAIL ADDRESS>
--
- */
- package cmd
-
- import (
-        "fmt"
-
-+       "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/pkg/word"
-        "github.com/spf13/cobra"
- )
-
-@@ -22,6 +22,7 @@ This application is a tool to generate the needed files
- to quickly create a Cobra application.`,
-        Run: func(cmd *cobra.Command, args []string) {
-                fmt.Println("word called")
-+               word.GenerateWord()
-        },
- }
-```
-
-We added the import and the call to `word.GenerateWord()`. Again we can run Gazelle 
-to add the new dep to the BUILD.bazel file. 
+Next update the BUILD.bazel files using gazelle:
 
 ```bash
 $ bazelisk run //:gazelle
@@ -884,32 +839,11 @@ index ac66183..891b0e1 100644
 -    deps = ["@com_github_spf13_cobra//:cobra"],
 +    deps = [
 +        "//pkg/roll",
-+        "//pkg/word",
 +        "@com_github_spf13_cobra//:cobra",
 +    ],
  )
 ```
 
-We can use Bazel to execute the binary with the new changes.
-
-```bash
-$ bazelisk run //:go-code-tutorial word
-```
-
-The above command generates the following output.
-
-```
-INFO: Analyzed target //:go-code-tutorial (0 packages loaded, 0 targets configured).
-INFO: Found 1 target...
-Target //:go-code-tutorial up-to-date:
-  bazel-bin/go-code-tutorial\_/go-code-tutorial
-INFO: Elapsed time: 0.107s, Critical Path: 0.00s
-INFO: 1 process: 1 internal.
-INFO: Build completed successfully, 1 total action
-INFO: Build completed successfully, 1 total action
-word called
-GenerateWord
-```
 
 The project is now modified so that the files under the pkg folder are now used.  This is the 
 principle of using internal dependencies.  Next, we will add a Go project dependency
@@ -917,44 +851,37 @@ hosted out of GitHub; an "external dependency".
 
 ## Adding an external dependency
 
-To create our random work generator, we will use babble, which is located here: 
-https://github.com/tjarratt/babble. The babble code On Linux uses "/usr/share/dicts/words" file, and you can use 
-the package manager to install wamerican or wbritish. See the babble README for more information
-on other operating systems.
+We are going to add klog as an external dependency, which is located here: https://github.com/kubernetes/klog.
 
-Edit generate_word.go to add the call to babble.
-We are referring to:
+To initialize klog we add the `klog.InitFlags(nil) line to the main.go file:
 
+```go
+func main() {
+    klog.InitFlags(nil)
+    cmd.Execute()
+}
 ```
-└── pkg
-    └── word
-        └── generate_word.go
-```
+The add the import:
 
-We need to add the import to the babble library and call the babble func. Here is the diff after the updates.
-
-```diff
-diff --git a/pkg/word/generate_word.go b/pkg/word/generate_word.go
-index 312a267..37215cf 100644
---- a/pkg/word/generate_word.go
-+++ b/pkg/word/generate_word.go
-@@ -1,7 +1,12 @@
- package word
-
--import "fmt"
-+import (
-+       "fmt"
-+
-+       "github.com/tjarratt/babble"
-+)
-
- func GenerateWord() {
-+       fmt.Println("GenerateWord called")
-+       fmt.Println(babble.NewBabbler().Babble())
- }
+```go
+   "k8s.io/klog/v2"
 ```
 
-I also cleaned up the Println to add some clarity.
+Edit pkg/roll_dice.go file to add the call to klog, and add the required import statement.
+Here is an example of using klog in the roll_dice.go file.
+
+```
+    klog.Info("rolling the dice")
+```
+
+Also replace the fmt.Println statement in cmd/roll.go:
+
+```
+        Run: func(cmd *cobra.Command, args []string) {
+               klog.Info("calling roll")
+               fmt.Printf("Number rolled: %s\n", roll.Roll())
+        }
+```
 
 Once that code change is done, we need to run go mod to update the project's 
 dependencies. We can use Bazel to run the Go binary instead of having
@@ -976,62 +903,59 @@ $ bazelisk run //:gazelle
 ```
 
 The first Bazel command updated the deps.bzl file. The second command
-updates the BUILD.bazel file in pkg/word.  Below is the diff of the 
+updates the BUILD.bazel file in pkg/roll.  Below is the diff of the 
 updates.
 
 ```diff
-diff --git a/pkg/word/BUILD.bazel b/pkg/word/BUILD.bazel
-index c974b0b..e5c0b28 100644
---- a/pkg/word/BUILD.bazel
-+++ b/pkg/word/BUILD.bazel
-@@ -5,4 +5,5 @@ go_library(
-     srcs = ["generate_word.go"],
-     importpath = "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/pkg/word",
+diff --git a/examples/basic-gazelle/pkg/roll/BUILD.bazel b/examples/basic-gazelle/pkg/roll/BUILD.bazel
+index bd37d646..0ced314d 100644
+--- a/examples/basic-gazelle/pkg/roll/BUILD.bazel
++++ b/examples/basic-gazelle/pkg/roll/BUILD.bazel
+@@ -5,6 +5,7 @@ go_library(
+     srcs = ["roll_dice.go"],
+     importpath = "github.com/bazelbuild/rules_go/examples/basic-gazelle/pkg/roll",
      visibility = ["//visibility:public"],
-+    deps = ["@com_github_tjarratt_babble//:babble"],
++    deps = ["@io_k8s_klog_v2//:klog"],
  )
-
 ```
 
-You can see the deps is now updated and points to the external repo `"@com_github_tjarratt_babble//:babble"`.
+You can see the deps is now updated and points to the external repo `"@io_k8s_klog_v2//:klog"`
 The "@" references an external code base that Bazel will download so that the Go SDK can build
 the code.
 
 This GitHub repo is defined in deps.bzl file in the following go_repository stanza.
 
 ```python
-go_repository(
-    name = "com_github_tjarratt_babble",
-    importpath = "github.com/tjarratt/babble",
-    sum = "h1:j8whCiEmvLCXI3scVn+YnklCU8mwJ9ZJ4/DGAKqQbRE=",
-    version = "v0.0.0-20210505082055-cbca2a4833c1",
-)
+     go_repository(
+         name = "io_k8s_klog_v2",
+         importpath = "k8s.io/klog/v2",
+         sum = "h1:atnLQ121W371wYYFawwYx1aEY2eUfs4l3J72wtgAwV4=",
+         version = "v2.80.1",
+     )
 ```
 
 We can now run our Go binary and see the changes.
 
 ```bash
-$ bazelisk run //:go-code-tutorial word
-INFO: Analyzed target //:go-code-tutorial (0 packages loaded, 0 targets configured).
+$  bazel run //:basic-gazelle roll
+INFO: Analyzed target //:basic-gazelle (0 packages loaded, 0 targets configured).
 INFO: Found 1 target...
-Target //:go-code-tutorial up-to-date:
-  bazel-bin/go-code-tutorial_/go-code-tutorial
-INFO: Elapsed time: 0.257s, Critical Path: 0.15s
-INFO: 3 processes: 1 internal, 2 linux-sandbox.
-INFO: Build completed successfully, 3 total actions
-INFO: Build completed successfully, 3 total actions
-word called
-GenerateWord called
-Rheingau-nightclothes
+Target //:basic-gazelle up-to-date:
+  bazel-bin/basic-gazelle_/basic-gazelle
+INFO: Elapsed time: 0.119s, Critical Path: 0.00s
+INFO: 1 process: 1 internal.
+INFO: Build completed successfully, 1 total action
+INFO: Build completed successfully, 1 total action
+I1129 14:45:14.253052   22596 roll.go:36] calling roll
+I1129 14:45:14.253087   22596 roll_dice.go:26] rolling the dice
+Number rolled: 43
 ```
-
 One of the things that you may notice is that you do not have to run "bazel build" and then "bazel run".
 Bazel will determine that the code is not built, and will run the "build" phase for you automatically.
 
 To recap what we have done.  We have modified our code to use the babble Go code on 
-GitHub.  We then use Bazel to run `go mod`, which updates go.mod file. Next we ran the targets gazelle-update-repos and gazelle
-with Bazel. The first Bazel alias updated the deps.bzl file with the external dependency and the Gazelle target 
-updated the deps section in pkg/word/BUILD.bazel.  Bazel can then download the external dependency
+GitHub.  We then use Bazel to run `go mod`, which updates go.mod file. Next we ran the targets gazelle-update-repos and gazelle with Bazel. The first Bazel alias updated the deps.bzl file with the external dependency and the Gazelle target 
+updated the deps section in pkg/roll/BUILD.bazel.  Bazel can then download the external dependency
 and use that dependency when our example Go program is compiled.
 
 How about we add a Go unit test so we can run "bazel test"?
@@ -1041,52 +965,22 @@ How about we add a Go unit test so we can run "bazel test"?
 As we mentioned, Bazel supports running code tests, as defined in Bazel rules. One of the rules from go_rules
 is go_test.  Now let's add a test.
 
-First, refactor the func GenerateWord in the Go file pkg/word/generate.go to return a string rather than printing it.
-
-Here are the changes:
-
-```go
-func GenerateWord() string {
-    fmt.Println("GenerateWord called")
-    return babble.NewBabbler().Babble()
-}
-```
-
-This will allow us to test that this func does not return an empty string.
-
-Now move the Println higher up in the stack so that the random word is still printed.
-Edit cmd/word.go file, and add a Println around the call to GenerateWord().
-
-Here are these changes.
-
-```go
-    Run: func(cmd *cobra.Command, args []string) {
-        fmt.Println("word called")
-        fmt.Println(word.GenerateWord())
-    },
-```
-
-Now let us build the code to make sure that we did not make any mistakes.
-
-```
-$ bazelisk build //...
-```
-
-Create a new file in the pkg/word directory called generate_word_test.go.
+Create a new file in the pkg/roll directory called roll_dice_test.go.
 Include the following code:
 
 ```go
-package word
+package roll
 
 import (
-    "testing"
+        "testing"
 )
 
-func TestGenerateWord(t *testing.T) {
-    result := GenerateWord()
-    if result == "" {
-        t.Error("got an empty string")
-    }
+func TestGenerateNumber(t *testing.T) {
+        result := generateNumber()
+
+        if result == "" {
+                t.Error("got an empty string")
+        }
 }
 ```
 
@@ -1100,30 +994,14 @@ Simply run:
 $ bazelisk run //:gazelle
 ```
 
-This now updates the BUILD.bazel file in the pkg/word directory.  Here
-is a diff of the update:
+This now updates the BUILD.bazel file in the pkg/roll directory with the following lines:
 
-```diff
-diff --git a/pkg/word/BUILD.bazel b/pkg/word/BUILD.bazel
-index e5c0b28..1b79ce0 100644
---- a/pkg/word/BUILD.bazel
-+++ b/pkg/word/BUILD.bazel
-@@ -1,4 +1,4 @@
--load("@io_bazel_rules_go//go:def.bzl", "go_library")
-+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
-
- go_library(
-     name = "word",
-@@ -7,3 +7,9 @@ go_library(
-     visibility = ["//visibility:public"],
-     deps = ["@com_github_tjarratt_babble//:babble"],
- )
-+
-+go_test(
-+    name = "word_test",
-+    srcs = ["generate_word_test.go"],
-+    embed = [":word"],
-+)
+```python
+go_test(
+    name = "roll_test",
+    srcs = ["roll_dice_test.go"],
+    embed = [":roll"],
+)
 ```
 
 We now have a [go_test](https://github.com/bazelbuild/rules_go/blob/master/docs/go/core/rules.md#go_test) 
@@ -1131,7 +1009,6 @@ rule, which is part of the rules_go ruleset. Now we can run:
 
 ```bash
 $ bazelisk test //...
-```
 
 The above command should print out results similar to
 
@@ -1142,61 +1019,60 @@ INFO: Found 5 targets and 1 test target...
 INFO: Elapsed time: 0.125s, Critical Path: 0.00s
 INFO: 1 process: 1 internal.
 INFO: Build completed successfully, 1 total action
-//pkg/word:word_test                                            (cached) PASSED in 0.0s
+//pkg/roll:roll_test                                            (cached) PASSED in 0.0s
 
 Executed 0 out of 1 test: 1 test passes.
 INFO: Build completed successfully, 1 total action
 ```
 
-You may also notice that the command printed out a target named `//pkg/word:word_test`.
+You may also notice that the command printed out a target named `//pkg/roll:wroll`.
 We can also run just the specific target:
 
 ```bash
-$ bazelisk test //pkg/word:word_test
+$ bazelisk test //pkg/roll:roll
 ```
 
 Let's now see what happens when a test fails since debugging unit tests are often part of the
-development process. In the generate_word_test.go file, change the "if" statement as shown below.
+development process. In the roll_dice_test.go file, change the "if" statement as shown below.
 
-```
+```go
     if result == "" {
 ```
 
 Now if we run
 
 ```
-$ bazelisk test //pkg/word:word_test
+$ bazelisk test //pkg/roll:roll_test
 ```
 
 We get an output like
 
 ```bash
-$ bazelisk test //...
-INFO: Analyzed 6 targets (0 packages loaded, 0 targets configured).
-INFO: Found 5 targets and 1 test target...
-FAIL: //pkg/word:word_test (see /home/clove/.cache/bazel/_bazel_clove/d1fd07b841c26eda93328e4eeaf2336a/execroot/__main__/bazel-out/k8-fastbuild/testlogs/pkg/word/word_test/test.log)
-INFO: Elapsed time: 0.299s, Critical Path: 0.17s
+$ bazelisk test //pkg/roll:roll_test
+INFO: Analyzed target //pkg/roll:roll_test (0 packages loaded, 0 targets configured).
+INFO: Found 1 test target...
+FAIL: //pkg/roll:roll_test (see /home/clove/.cache/bazel/_bazel_clove/f408d421e706f9a6112d2f3205e6556c/execroot/__main__/bazel-out/k8-fastbuild/testlogs/pkg/roll/roll_test/test.log)
+Target //pkg/roll:roll_test up-to-date:
+  bazel-bin/pkg/roll/roll_test_/roll_test
+INFO: Elapsed time: 0.336s, Critical Path: 0.18s
 INFO: 6 processes: 1 internal, 5 linux-sandbox.
 INFO: Build completed, 1 test FAILED, 6 total actions
-//pkg/word:word_test                                                     FAILED in 0.0s
-  /home/clove/.cache/bazel/_bazel_clove/d1fd07b841c26eda93328e4eeaf2336a/execroot/__main__/bazel-out/k8-fastbuild/testlogs/pkg/word/word_test/test.log
+//pkg/roll:roll_test                                                     FAILED in 0.0s
+  /home/clove/.cache/bazel/_bazel_clove/f408d421e706f9a6112d2f3205e6556c/execroot/__main__/bazel-out/k8-fastbuild/testlogs/pkg/roll/roll_test/test.log
 
-INFO: Build completed, 1 test FAILED, 6 total actions
+INFO: Build completed, 1 test FAILED, 6 total action
 ```
 
 The line that displays the path to the test.log file will differ between systems, but it provides output from the unit test.
 If we cat the file we see the results:
 
 ```bash
-$ cat /home/clove/.cache/bazel/_bazel_clove/d1fd07b841c26eda93328e4eeaf2336a/execroot/__main__/bazel-out/k8-fastbuild/testlogs/pkg/word/word_test/test.log
+$ cat /home/clove/.cache/bazel/_bazel_clove/f408d421e706f9a6112d2f3205e6556c/execroot/__main__/bazel-out/k8-fastbuild/testlogs/pkg/roll/roll_test/test.log
 exec ${PAGER:-/usr/bin/less} "$0" || exit 1
-Executing tests from //pkg/word:word_test
+Executing tests from //pkg/roll:roll_test
 -----------------------------------------------------------------------------
-GenerateWord called
-HERE
-grebes-slickness's
---- FAIL: TestGenerateWord (0.00s)
-    generate_word_test.go:13: got an empty string
+--- FAIL: TestGenerateNumber (0.00s)
+    roll_dice_test.go:25: got an empty string
 FAIL
 ```
 
@@ -1204,25 +1080,22 @@ Adding the "test_ouput" argument to the Bazel test command will output the test 
 
 ```bash
 $ bazelisk test --test_output=errors //...
-INFO: Analyzed 6 targets (0 packages loaded, 0 targets configured).
-INFO: Found 5 targets and 1 test target...
-FAIL: //pkg/word:word_test (see /home/clove/.cache/bazel/_bazel_clove/d1fd07b841c26eda93328e4eeaf2336a/execroot/__main__/bazel-out/k8-fastbuild/testlogs/pkg/word/word_test/test.log)
-INFO: From Testing //pkg/word:word_test:
-==================== Test output for //pkg/word:word_test:
-GenerateWord called
-HERE
-justest-indefensibly
---- FAIL: TestGenerateWord (0.00s)
-    generate_word_test.go:13: got an empty string
+INFO: Analyzed 5 targets (0 packages loaded, 0 targets configured).
+INFO: Found 4 targets and 1 test target...
+FAIL: //pkg/roll:roll_test (see /home/clove/.cache/bazel/_bazel_clove/f408d421e706f9a6112d2f3205e6556c/execroot/__main__/bazel-out/k8-fastbuild/testlogs/pkg/roll/roll_test/test.log)
+INFO: From Testing //pkg/roll:roll_test:
+==================== Test output for //pkg/roll:roll_test:
+--- FAIL: TestGenerateNumber (0.00s)
+    roll_dice_test.go:25: got an empty string
 FAIL
 ================================================================================
-INFO: Elapsed time: 0.191s, Critical Path: 0.02s
-INFO: 2 processes: 1 internal, 1 linux-sandbox.
-INFO: Build completed, 1 test FAILED, 2 total actions
-//pkg/word:word_test                                                     FAILED in 0.0s
-  /home/clove/.cache/bazel/_bazel_clove/d1fd07b841c26eda93328e4eeaf2336a/execroot/__main__/bazel-out/k8-fastbuild/testlogs/pkg/word/word_test/test.log
+INFO: Elapsed time: 0.191s, Critical Path: 0.03s
+INFO: 3 processes: 1 internal, 2 linux-sandbox.
+INFO: Build completed, 1 test FAILED, 3 total actions
+//pkg/roll:roll_test                                                     FAILED in 0.0s
+  /home/clove/.cache/bazel/_bazel_clove/f408d421e706f9a6112d2f3205e6556c/execroot/__main__/bazel-out/k8-fastbuild/testlogs/pkg/roll/roll_test/test.log
 
-INFO: Build completed, 1 test FAILED, 2 total actions
+INFO: Build completed, 1 test FAILED, 3 total actions
 ```
 
 If you like you can change the "if" statement back so that the unit test passes.
