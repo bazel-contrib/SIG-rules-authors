@@ -6,9 +6,6 @@ nav_order: 3
 
 ## This tutorial covers
 
-<!-- TODO rename -->
-<!--    "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/pkg/roll" -->
-
 - Background of Bazel and Bazel's Go support
 - Covering the use of rules_go with Bazel and Go
 - Creating a basic Go project for the tutorial
@@ -118,7 +115,7 @@ random number.
 ## Generate the project framework
 
 First, create a git repository to store your work.  For this project, we are using
-<https://github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial>, and replace any references
+<https://github.com/bazelbuild/rules_go/tree/master/examples/basic-gazelle>, and replace any references
 to that repository with your own. You can refer to the above repository for 
 the final source code base.
 
@@ -137,7 +134,7 @@ more details.
 In the root directory of your project use `go mod` and init the code vendoring.
 
 ```bash
-$ go mod init github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial
+$ go mod init github.com/bazelbuild/rules_go/tree/master/examples/basic-gazelle
 ```
 
 Next use cobra-cli to create go root, root, and roll files. Replace 
@@ -164,7 +161,7 @@ You will now have the following files:
 
 Let's add a directory:
 
-```console
+```bash
 $ mkdir -p pkg/roll
 ```
 
@@ -324,7 +321,7 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 
 # Modify the prefix to your project name in your git repository.
 
-# gazelle:prefix github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial
+# gazelle:prefix github.com/bazelbuild/rules_go/tree/master/examples/basic-gazelle
 gazelle(name = "gazelle")
 
 # Add a rule to call gazelle and pull in new go dependencies.
@@ -452,12 +449,12 @@ This will build the binary for our example project. We can run the binary that B
 creates with the following command:
 
 ```bash
-$ bazelisk run //:go-code-tutorial
+$ bazelisk run //:basic-gazelle
 ```
 You can also pass in the command line option "roll" that we defined to the Bazel run command.
 
 ```bash
-$ bazelisk run //:go-code-tutorial roll
+$ bazelisk run //:basic-gazelle roll
 ```
 
 We will cover the "test" command later as we do not have any tests defined
@@ -468,7 +465,7 @@ command was a bit confusing for me when I first learned Bazel.  The "//..." or "
 is called a target.
 
 You can refer to the documentation [here](https://bazel.build/run/build#bazel-build).  The text "//..."
-and "//:go-code-tutorial" are all the targets in a given directory or the name of a 
+and "//:basic-gazelle" are all the targets in a given directory or the name of a 
 specific target.  Some commands like build, and test can run multiple targets, 
 while a command like run can only execute one target.
 
@@ -518,19 +515,19 @@ The below table provides a great guide for targets:
 > <cite>https://bazel.build/run/build#specifying-build-targets</cite>
 
 If we look in the `BUILD.bazel` file in the root directory will find a go_library rule
-named go-code-tutorial_lib, and this is a target we can build.
+named basic-gazelle_lib, and this is a target we can build.
 
 ```bash
-$ bazelisk build //:go-code-tutorial_lib
+$ bazelisk build //:basic-gazelle_lib
 ```
 
 This "go_library" target is named by Gazelle automatically depending on the name of your project, so
 the name may differ.
 
-We can also run the go-code-tutorial binary target using the following command:
+We can also run the basic-gazelle binary target using the following command:
 
 ```bash
-$ bazelisk run //:go-code-tutorial roll
+$ bazelisk run //:basic-gazelle roll
 ```
 
 Or we can build all of the targets under the pkg directory:
@@ -547,13 +544,13 @@ Bazel creates various folders and symlinks in the project directory. Within our 
 - bazel-bazel-gazelle
 - bazel-bin
 - bazel-out
-- bazel-go-code-tutorial
+- bazel-basic-gazelle
 - bazel-testlogs
 
 Binaries from the project are placed under the bazel-bin folder.  Inside that folder, we have another folder
-with the name go-code-tutorial&#95;, and that folder name is created from the name of the binary that is 
+with the name basic-gazelle&#95;, and that folder name is created from the name of the binary that is 
 created.  A Bazel project can contain multiple binaries, so we have to have that form of naming syntax.  Inside
-the go-code-tutorial&#95; folder we have the binary go-code-tutorial&#95;.
+the basic-gazelle&#95; folder we have the binary basic-gazelle&#95;.
 
 ### Where Gazelle defines the dependencies
 
@@ -619,16 +616,16 @@ After we ran Gazelle, the `BUILD.bazel` file was updated to include two new Star
 
 ```python
 go_library(
-    name = "go-code-tutorial_lib",
+    name = "basic-gazelle_lib",
     srcs = ["main.go"],
-    importpath = "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial",
+    importpath = "github.com/bazelbuild/rules_go/tree/master/examples/basic-gazelle",
     visibility = ["//visibility:private"],
     deps = ["//cmd"],
 )
 
 go_binary(
-    name = "go-code-tutorial",
-    embed = [":go-code-tutorial_lib"],
+    name = "basic-gazelle",
+    embed = [":basic-gazelle_lib"],
     visibility = ["//visibility:public"],
 )
 ```
@@ -647,7 +644,7 @@ go_library(
         "roll.go",
         "root.go",
     ],
-    importpath = "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/cmd",
+    importpath = "github.com/bazelbuild/rules_go/tree/master/examples/basic-gazelle/cmd",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_spf13_cobra//:cobra",
@@ -686,7 +683,7 @@ The go_library definition is then used later in the file.
 
 ```
 go_library(
-    name = "go-code-tutorial_lib",
+    name = "basic-gazelle_lib",
 ```
 
 So the `WORKSPACE` file includes the definition of which rules_go we are using and then the `BUILD.bazel`
@@ -744,7 +741,7 @@ You will now have:
 import (
     "fmt"
 
-    "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/pkg/roll"
+    "github.com/bazelbuild/rules_go/tree/master/examples/basic-gazelle/pkg/roll"
     "github.com/spf13/cobra"
 )
 ```
@@ -775,21 +772,21 @@ Execute the following command:
 ```bash
 $ bazelisk run //:gazelle
 ```
+
 We can now use bazel to run the binary again:
 
 ```bash
-$ bazelisk run //:go-code-tutorial roll
-
+$ bazelisk run //:basic-gazelle roll
 ```
 
 The above commands build the Go binary and executes it.  The following
 is an example of the output from the run command.
 
 ```
-INFO: Analyzed target //:go-code-tutorial (1 packages loaded, 6 targets configured).
+INFO: Analyzed target //:basic-gazelle (1 packages loaded, 6 targets configured).
 INFO: Found 1 target...
-Target //:go-code-tutorial up-to-date:
-  bazel-bin/go-code-tutorial\_/go-code-tutorial
+Target //:basic-gazelle up-to-date:
+  bazel-bin/basic-gazelle\_/basic-gazelle
 INFO: Elapsed time: 0.316s, Critical Path: 0.16s
 INFO: 3 processes: 1 internal, 2 linux-sandbox.
 INFO: Build completed successfully, 3 total actions
@@ -807,7 +804,7 @@ index ac66183..9033b86 100644
 +++ b/cmd/BUILD.bazel
 @@ -9,5 +9,8 @@ go_library(
      ],
-     importpath = "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/cmd",
+     importpath = "github.com/bazelbuild/rules_go/tree/master/examples/basic-gazelle/cmd",
      visibility = ["//visibility:public"],
 -    deps = ["@com_github_spf13_cobra//:cobra"],
 +    deps = [
@@ -834,7 +831,7 @@ index ac66183..891b0e1 100644
 +++ b/cmd/BUILD.bazel
 @@ -9,5 +9,9 @@ go_library(
      ],
-     importpath = "github.com/bazel-contrib/Bazel-learning-paths/tutorials/go-code-tutorial/cmd",
+     importpath = "github.com/bazelbuild/rules_go/tree/master/examples/basic-gazelle/cmd",
      visibility = ["//visibility:public"],
 -    deps = ["@com_github_spf13_cobra//:cobra"],
 +    deps = [
@@ -870,13 +867,13 @@ The add the import:
 Edit pkg/roll_dice.go file to add the call to klog, and add the required import statement.
 Here is an example of using klog in the roll_dice.go file.
 
-```
+```go
     klog.Info("rolling the dice")
 ```
 
 Also replace the fmt.Println statement in cmd/roll.go:
 
-```
+```go
         Run: func(cmd *cobra.Command, args []string) {
                klog.Info("calling roll")
                fmt.Printf("Number rolled: %s\n", roll.Roll())
