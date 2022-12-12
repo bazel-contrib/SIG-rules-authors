@@ -282,16 +282,7 @@ load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 # The first declaration of an external repository "wins".
 ############################################################
 
-# we are going to store the go dependecy definitions
-# in a different file "deps.bzl". We can include those 
-# definitions in this file, but it gets quite verbose.
-load("//:deps.bzl", "go_dependencies")
-
 # Next we initialize the toolchains
-
-# gazelle:repository_macro deps.bzl%go_dependencies
-go_dependencies()
-
 go_rules_dependencies()
 
 # We define the version of go that this project uses
@@ -354,7 +345,7 @@ $ bazelisk run //:gazelle-update-repos
 Which is the equivalent of running:
 
 ```bash
-$ bazelist run //:gazelle update-repos -from_file=go.mod -to_macro=deps.bzl%go_dependencies -prune
+$ bazelisk run //:gazelle update-repos -from_file=go.mod -to_macro=deps.bzl%go_dependencies -prune
 ```
 
 The update-repos command is a very common way of running Gazelle. 
@@ -424,7 +415,7 @@ and created new `BUILD.bazel` files as well. Here is a layout of the Bazel files
         └── BUILD.bazel
 ```
 
-The `WORKSPACE` file was updated as well, and we have a new file called `deps.bzl`. 
+The `WORKSPACE` file was updated as well, now loading the go dependecy definitions from a new file called `deps.bzl`.
 We now have a working Bazel project, so what commands can we run?
 
 ### Basic Bazel commands
