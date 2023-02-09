@@ -1,0 +1,16 @@
+load("@npm//:ajv-cli/package_json.bzl", ajv = "bin")
+
+ajv.ajv_test(
+    name = "test",
+    args = [
+        "validate",
+        "-s",
+        "$(execpath rulesets.schema.json)",
+        "-d",
+        "$(execpath rulesets.json)",
+    ],
+    data = [
+        "rulesets.json",
+        "rulesets.schema.json",
+    ],
+)

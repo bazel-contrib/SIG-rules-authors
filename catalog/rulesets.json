@@ -86,7 +86,7 @@
       "ghrepo": "bazelbuild/rules_pkg",
       "shortname": "Packaging",
       "bazel-recommended": true,
-      "bzlmod_name": "rules_pkg",
+      "bzlmod_name": "rules_pkg"
     },
     {
       "ghrepo": "bazelbuild/rules_postcss"
