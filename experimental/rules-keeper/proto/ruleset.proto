@@ -1,0 +1,175 @@
+syntax = "proto3";
+
+package ruleset;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/bazel-contrib/SIG-rules-authors/experimental/rules-keeper/proto;rulesetpb";
+
+message Ruleset {
+  // github_repo_full_path is the full path to its github repo. eg.
+  // bazelbuild/bazel-skylib
+  string github_repo = 1;
+
+  // maintainers of the ruleset in the form of mailbox format as specified in
+  // RFC 5322.
+  repeated string maintainers = 2;
+
+  // update_time is the time when this data is updated.
+  google.protobuf.Timestamp update_time = 3;
+
+  // license of the project.
+  string license = 4;
+
+  // tags are versions of this ruleset
+  repeated Version versions = 5;
+
+  // project_health is the stats on if this project is on the right track.
+  ProjectHealth project_health = 6;
+
+  // project_popularity is the stats on how popular this project is.
+  ProjectPopularity project_popularity = 7;
+
+  // project_activity is the stats on how active this proejct is developed
+  // and  maintained.
+  ProjectActivity project_activity = 8;
+}
+
+// Version denotes a version of a ruleset.
+message Version {
+  // ref is a git reference that could be resolved to a commit object,
+  // normally a tag, ie. a semver starting with v. HEAD stands
+  string ref = 1;
+
+  // SHA of the commit being tagged.
+  string sha = 2;
+
+  // description is the content of the README file.
+  string readme = 3;
+
+  // yanked denotes if this version is yanked.
+  bool yanked = 5;
+
+  // releases made at this version.
+  repeated Release releases = 6;
+
+  // module_file is the parsed MODULE.bazel file. If set, this version is a
+  // valid bzlmod.
+  ModuleFile module_file = 7;
+
+  // module_info is the content of this module.
+  // stardoc.ModuleInfo module_info = 6;
+}
+
+// Release denotes a release of a ruleset.
+message Release {
+  // title of the release.
+  string title = 3;
+
+  // description of the release.
+  string description = 4;
+
+  // prerelease marks if the release is a preprelease.
+  bool preprelease = 5;
+
+  // publish_time denotes the time this release is made public.
+  google.protobuf.Timestamp publish_time = 6;
+
+  // assets of this release.
+  repeated Asset assets = 7;
+
+  message Asset {
+    // name is the name of the asset. eg. xxx.tar
+    string name = 1;
+    // url is the url for dowloading the asset.
+    string url = 2;
+    // download_count is the accumulated number of downloads.
+    // Output only.
+    int32 download_count_by_week = 3;
+  }
+}
+
+// ModuleFile is the parsed content of MODULE.bazel.
+message ModuleFile {
+  // name of the module.
+  string name = 1;
+
+  // version of the module.
+  string version = 2;
+
+  repeated string bazel_compatibility = 3;
+
+  // compatibility level of the module.
+  int32 compatibility_level = 4;
+
+  repeated string execution_platforms_to_register = 5;
+
+  repeated string toolchains_to_register = 6;
+}
+
+// ProjectPopularity contains stats by measuring the user engagement.
+message ProjectPopularity {
+  // update_time is the time when this data is generated.
+  google.protobuf.Timestamp update_time = 1;
+
+  // star_count is the number of stars on github as of update_time.
+  int32 star_count = 2;
+
+  // fork_count is the number of forks on github as of update_time.
+  int32 fork_count = 3;
+
+  // release_download_count_by_week is the number of release assets being
+  // downloaded aggregated by week. The array order is the oldest week to the
+  // most recent week (as of update_time).
+  repeated int32 release_download_count_by_week = 4;
+
+  // git_clone_count_by_week is the number of repository being cloned aggregated
+  // by week. The array order is the oldest week to the most recent week (as of
+  // update_time).
+  repeated int32 git_clone_count_by_week = 5;
+
+  // page_view_count_by_week is the number of page views aggregated by week. The
+  // array order is the oldest week to the most recent week (as of update_time).
+  repeated int32 page_view_count_by_week = 6;
+}
+
+message ProjectHealth {
+  // community_profile_health_percentage is defined as a percentage of how many
+  // of expected project documents present. See
+  // https://docs.github.com/en/rest/metrics/community#get-community-profile-metrics
+  int32 community_profile_health_percentage = 1;
+}
+
+// ProjectActivity contains stats by measuring the contributor engagement.
+message ProjectActivity {
+  // open_pr_count is the number of open PRs as of update_time.
+  int32 open_pr_count = 2;
+
+  // open_issue_count is the number of open issues as of update_time.
+  int32 open_issue_count = 3;
+
+  // commit_count_by_week is the number of commits being submitted aggregated by
+  // week. The array order is the oldest week to the most recent week (as of
+  // update_time).
+  repeated int32 commit_count_by_week = 4;
+
+  // pr_open_count_by_week is the number of pr open events aggregated by
+  // week. The array order is the oldest week to the most recent week (as of
+  // update_time).
+  repeated int32 pr_open_count_by_week = 5;
+
+  // pr_close_count_by_week is the number of pr close (incl. merge) events
+  // aggregated by week. The array order is the oldest week to the most recent
+  // week (as of update_time).
+  repeated int32 pr_close_count_by_week = 6;
+
+  // issue_open_count_by_week is the number of issue open events aggregated by
+  // week. The array order is the oldest week to the most recent week (as of
+  // update_time).
+  repeated int32 issue_open_count_by_week = 7;
+
+  // issue_close_count_by_week is the number of issue close events aggregated by
+  // week. The array order is the oldest week to the most recent week (as of
+  // update_time).
+  repeated int32 issue_close_count_by_week = 8;
+}

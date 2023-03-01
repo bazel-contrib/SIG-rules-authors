@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package ruleset.timeseries;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/bazel-contrib/SIG-rules-authors/experimental/rules-keeper/timeseries/proto;timeseriespb";
+
+// Metadata stores metadata about a timeseries.
+message Metadata {
+  // update_time is the time when the timeseries was last updated.
+  google.protobuf.Timestamp update_time = 1;
+}

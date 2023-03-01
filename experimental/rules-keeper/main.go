@@ -3,135 +3,122 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
-	"net/http"
+	"io"
+	"strings"
 
-	"github.com/bradleyfalzon/ghinstallation/v2"
 	"github.com/golang/glog"
 	"github.com/google/go-github/v50/github"
+	"golang.org/x/oauth2"
 )
 
 var (
-	appID      int64 = 290065
-	privateKey       = "appventure-test.2023-02-06.private-key.pem"
+	appID         int64 = 290065
+	privateKey          = "appventure-test.2023-02-06.private-key.pem"
+	personalToken       = ""
+	repoOwner           = ""
+	repoName            = ""
 )
 
 func init() {
 	flag.Int64Var(&appID, "app_id", appID, "The Github App ID.")
 	flag.StringVar(&privateKey, "private_key", privateKey, "The path to the Github App private key file.")
+	flag.StringVar(&personalToken, "personal_token", personalToken, "The personal token to use for the Github API. When set, instead of using App credential to fetch all installed repos, you must specify the owner and repo to update metrics.")
+	flag.StringVar(&repoOwner, "owner", repoOwner, "The owner of the repo to update metrics. Must be specified when using personal token.")
+	flag.StringVar(&repoName, "repo", repoName, "The name of the repo to update metrics. Must be specified when using personal token.")
 }
 
-const maxPageSize = 100 // max allowed page size.
+var releaseContentType = map[string]bool{
+	"application/x-gzip": true,
+	"application/gzip":   true,
+	"application/zip":    true,
+}
+
+func parse(repoPath string) (owner, repo string) {
+	idx := strings.LastIndexByte(repoPath, '/')
+	return repoPath[:idx], repoPath[idx+1:]
+}
 
 func main() {
 	flag.Parse()
+
 	ctx := context.Background()
+	ctx = context.WithValue(ctx, oauth2.HTTPClient, newLoggedHTTPClient())
+
+	if personalToken != "" {
+		if repoOwner == "" || repoName == "" {
+			glog.Exitf("owner and repo must be specified when using personal token")
+		}
+		r := &repo{
+			cli:   github.NewTokenClient(ctx, personalToken),
+			owner: repoOwner,
+			name:  repoName,
+		}
+		if err := r.Update(ctx); err != nil {
+			glog.Exit(err)
+		}
+		if err := r.UpdateMetrics(ctx); err != nil {
+			glog.Exit(err)
+		}
+		return
+	}
+
 	app, err := newApp(appID, privateKey)
 	if err != nil {
 		glog.Exit(err)
 	}
-	insts, err := app.listInstallations(ctx)
-	if err != nil {
-		glog.Exit(err)
-	}
-	// TODO: break this into smaller pieces.
-	for _, inst := range insts {
-		fmt.Println(github.Stringify(inst))
-		inst, err := newInstallation(inst.GetAppID(), inst.GetID(), privateKey)
+	// TODO(@ashi009): flatten the iterator.
+	for it := app.ListInstallations(ctx); ; {
+		inst, err := it.Next()
+		if err == io.EOF {
+			break
+		}
 		if err != nil {
 			glog.Exit(err)
 		}
-		repos, err := inst.ListRepos(ctx)
-		if err != nil {
-			glog.Exit(err)
-		}
-		for _, repo := range repos {
-			fmt.Println(github.Stringify(repo))
-			v, err := inst.GetTrafficViews(ctx, repo)
+		for rit := inst.ListRepos(ctx); ; {
+			r, err := rit.Next()
+			if err == io.EOF {
+				break
+			}
 			if err != nil {
 				glog.Exit(err)
 			}
-			fmt.Println(github.Stringify(v))
+			if err := r.UpdateMetrics(ctx); err != nil {
+				glog.Exit(err)
+			}
+			if err := r.UpdateVersions(ctx); err != nil {
+				glog.Exit(err)
+			}
 		}
 	}
 }
 
-type app struct {
-	cli *github.Client
-}
-
-func newApp(appID int64, privateKey string) (*app, error) {
-	// TODO: find a better way for handling the token source.
-	itr, err := ghinstallation.NewAppsTransportKeyFromFile(http.DefaultTransport, appID, privateKey)
-	if err != nil {
-		return nil, err
+func (r *repo) Update(ctx context.Context) error {
+	if err := r.UpdateVersions(ctx); err != nil {
+		return err
 	}
-	return &app{github.NewClient(&http.Client{Transport: itr})}, nil
-}
-
-// TODO(@ashi009): write an itereator for listing APIS.
-// Github is not using token based pagination, so the underlying data might
-// change while loading the next page. So we need a way to remedy this, an
-// iterator to dedup might be the solution.
-
-func (a *app) listInstallations(ctx context.Context) ([]*github.Installation, error) {
-	var res []*github.Installation
-	for pg := 1; ; pg++ {
-		ins, _, err := a.cli.Apps.ListInstallations(ctx, &github.ListOptions{
-			Page:    pg,
-			PerPage: maxPageSize,
-		})
-		if err != nil {
-			return nil, err
-		}
-		res = append(res, ins...)
-		if len(ins) < maxPageSize {
-			break
-		}
+	if err := r.UpdateMetrics(ctx); err != nil {
+		return err
 	}
-	return res, nil
+	return nil
 }
 
-type installation struct {
-	cli *github.Client
-}
-
-func newInstallation(appID, installID int64, privateKey string) (*installation, error) {
-	itr, err := ghinstallation.NewKeyFromFile(http.DefaultTransport, appID, installID, privateKey)
-	if err != nil {
-		return nil, err
+func (r *repo) UpdateMetrics(ctx context.Context) error {
+	glog.Infof("Updating metrics for %s/%s", r.owner, r.name)
+	if err := r.UpdateRepoStats(ctx); err != nil {
+		return err
 	}
-	return &installation{github.NewClient(&http.Client{Transport: itr})}, nil
-}
-
-func (i *installation) ListRepos(ctx context.Context) ([]*github.Repository, error) {
-	var res []*github.Repository
-	for pg := 1; ; pg++ {
-		repos, _, err := i.cli.Apps.ListRepos(ctx, &github.ListOptions{
-			Page:    pg,
-			PerPage: maxPageSize,
-		})
-		if err != nil {
-			return nil, err
-		}
-		res = append(res, repos.Repositories...)
-		if len(repos.Repositories) < maxPageSize || len(res) >= repos.GetTotalCount() {
-			break
-		}
+	if err := r.UpdateCommitActivity(ctx); err != nil {
+		return err
 	}
-	return res, nil
-}
-
-func (i *installation) GetTrafficViews(ctx context.Context, repo *github.Repository) (*github.TrafficViews, error) {
-	tvs, _, err := i.cli.Repositories.ListTrafficViews(ctx, repo.GetOwner().GetLogin(), repo.GetName(), &github.TrafficBreakdownOptions{
-		Per: "day",
-	})
-	return tvs, err
-}
-
-func (i *installation) GetTrafficClones(ctx context.Context, repo *github.Repository) (*github.TrafficClones, error) {
-	cls, _, err := i.cli.Repositories.ListTrafficClones(ctx, repo.GetOwner().GetLogin(), repo.GetName(), &github.TrafficBreakdownOptions{
-		Per: "day",
-	})
-	return cls, err
+	if err := r.UpdateIssueActivity(ctx); err != nil {
+		return err
+	}
+	if err := r.UpdateComunityHealth(ctx); err != nil {
+		return err
+	}
+	if err := r.UpdateTraffic(ctx); err != nil {
+		return err
+	}
+	return nil
 }
