@@ -50,12 +50,7 @@ func (r *repo) UpdateRepoStats(ctx context.Context) error {
 		return err
 	}
 
-	// TODO(@ashi009): Change the store to automatically remove stale points. Say,
-	// add a stale evict policy.
-	now := time.Now().UTC()
-	cutoff := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location()).AddDate(0, 0, -365)
-	s.RemoveStalePoints(cutoff)
-
+	now := time.Now()
 	repo, _, err := r.cli.Repositories.Get(ctx, r.owner, r.name)
 	if err != nil {
 		return err
@@ -64,7 +59,7 @@ func (r *repo) UpdateRepoStats(ctx context.Context) error {
 	p.StarsCount = repo.GetStargazersCount()
 	p.ForksCount = repo.GetForksCount()
 
-	s.SetUpdateTime(now)
+	s.ShiftWindow(now)
 	return s.Flush()
 }
 
@@ -97,15 +92,8 @@ func (r *repo) UpdateTraffic(ctx context.Context) error {
 		return err
 	}
 
-	// TODO(@ashi009): Change the store to automatically remove stale points. Say,
-	// add a stale evict policy.
-	now := time.Now().UTC()
-	cutoff := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location()).AddDate(0, 0, -365)
-	s.RemoveStalePoints(cutoff)
-	lastUpdate := s.UpdateTime()
-	if lastUpdate.Before(cutoff) {
-		lastUpdate = cutoff
-	}
+	_, lastUpdate := s.Window()
+	now := time.Now()
 
 	vs, _, err := r.cli.Repositories.ListTrafficViews(ctx, r.owner, r.name, &github.TrafficBreakdownOptions{
 		Per: "week",
@@ -139,6 +127,6 @@ func (r *repo) UpdateTraffic(ctx context.Context) error {
 		p.ClonesUniqueCount = c.GetUniques()
 	}
 
-	s.SetUpdateTime(now)
+	s.ShiftWindow(now)
 	return s.Flush()
 }

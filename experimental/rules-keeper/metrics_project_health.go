@@ -43,12 +43,7 @@ func (r *repo) UpdateComunityHealth(ctx context.Context) error {
 		return err
 	}
 
-	// TODO(@ashi009): Change the store to automatically remove stale points. Say,
-	// add a stale evict policy.
-	now := time.Now().UTC()
-	cutoff := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location()).AddDate(0, 0, -365)
-	s.RemoveStalePoints(cutoff)
-
+	now := time.Now()
 	m, _, err := r.cli.Repositories.GetCommunityHealthMetrics(ctx, r.owner, r.name)
 	if err != nil {
 		return err
@@ -56,6 +51,6 @@ func (r *repo) UpdateComunityHealth(ctx context.Context) error {
 	p := s.GetOrCreatePointAt(now)
 	p.CommunityHealthPercentage = m.GetHealthPercentage()
 
-	s.SetUpdateTime(now)
+	s.ShiftWindow(now)
 	return s.Flush()
 }

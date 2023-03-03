@@ -1,11 +1,33 @@
-ref:  "v0.5.0"
-sha:  "b55b8608bcd4255c6b13459dea557e63ef6bf605"
-readme:  "# Bazel rules for ts\n\nHigh-performance alternative to the `@bazel/typescript` npm package, based on\nhttps://github.com/aspect-build/rules_js.\n\nThe `ts_project` rule here is identical to the one in rules_nodejs, making it easy to migrate.\n\nSince rules_js always runs tools from the bazel-out tree, rules_ts naturally fixes the usability bugs with rules_nodejs.\n\n- Freely mix generated `*.ts` and `tsconfig.json` files in the bazel-out tree with source files\n- Fixes the need for any `rootDirs` settings in `tsconfig.json` as reported in https://github.com/microsoft/TypeScript/issues/37378\n- \"worker mode\" for `ts_project` now shares workers across all targets, rather than requiring one worker pool per target\n\n## Installation\n\nFrom the release you wish to use:\n<https://github.com/aspect-build/rules_ts/releases>\ncopy the WORKSPACE snippet into your `WORKSPACE` file.\n"
-releases:  {
-  title:  "v0.5.0"
-  description:  "WORKSPACE snippet:\n```starlark\nload(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")\nhttp_archive(\n    name = \"aspect_rules_ts\",\n    sha256 = \"1f4854ac104881b62d341c19d6150d32ba582351b24a1f0b761c218456057017\",\n    strip_prefix = \"rules_ts-0.5.0\",\n    url = \"https://github.com/aspect-build/rules_ts/archive/refs/tags/v0.5.0.tar.gz\",\n)\n\n##################\n# rules_ts setup #\n##################\n# Fetches the rules_ts dependencies.\n# If you want to have a different version of some dependency,\n# you should fetch it *before* calling this.\n# Alternatively, you can skip calling this function, so long as you've\n# already fetched all the dependencies.\nload(\"@aspect_rules_ts//ts:repositories.bzl\", \"LATEST_VERSION\", \"rules_ts_dependencies\")\n\nrules_ts_dependencies(ts_version = LATEST_VERSION)\n\n# Fetch and register node, if you haven't already\nload(\"@rules_nodejs//nodejs:repositories.bzl\", \"DEFAULT_NODE_VERSION\", \"nodejs_register_toolchains\")\n\nnodejs_register_toolchains(\n    name = \"node\",\n    node_version = DEFAULT_NODE_VERSION,\n)\n```\n\n\n## What's Changed\n* refactor: remove rules_swc dep, point to bazel-examples by @alexeagle in https://github.com/aspect-build/rules_ts/pull/36\n* chore: update to rules_js 0.11.0 by @gregmagolan in https://github.com/aspect-build/rules_ts/pull/38\n\n\n**Full Changelog**: https://github.com/aspect-build/rules_ts/compare/v0.4.0...v0.5.0"
-  preprelease:  true
-  publish_time:  {
-    seconds:  1654298167
+ref: "main"
+sha: "ccdc52e25c226be3786e7df8b95ebab6ef72d390"
+readme: "# Bazel rules for TypeScript\n\nThis is the canonical ruleset for using Bazel for TypeScript, based on\n<https://github.com/aspect-build/rules_js>, and recommended for all new projects.\n\nThis is a high-performance alternative to the `@bazel/typescript` npm package from rules_nodejs.\nThe `ts_project` rule here is identical to the one in rules_nodejs, making it easy to migrate.\nSince rules_js always runs tools from the bazel-out tree, rules_ts naturally fixes most usability bugs with rules_nodejs:\n\n-   Freely mix generated `*.ts` and `tsconfig.json` files in the bazel-out tree with source files\n-   Fixes the need for any `rootDirs` settings in `tsconfig.json` as reported in https://github.com/microsoft/TypeScript/issues/37378\n-   \"worker mode\" for `ts_project` now shares workers across all targets, rather than requiring one worker pool per target\n\nrules_ts is just a part of what Aspect provides:\n\n-   _Need help?_ This ruleset has support provided by https://aspect.dev.\n-   See our other Bazel rules, especially those built for rules_js, linked from <https://github.com/aspect-build>\n\nKnown issues:\n\n-   Does not work with `--worker_sandboxing`. See https://github.com/aspect-build/rules_ts/issues/127#issuecomment-1312041592\n-   Workers are disabled and not currently supported on Windows hosts. See https://github.com/aspect-build/rules_ts/issues/228.\n\n## Installation\n\nFrom the release you wish to use:\n<https://github.com/aspect-build/rules_ts/releases>\ncopy the WORKSPACE snippet into your `WORKSPACE` file.\n\n## Examples\n\nThere are a number of examples in [the examples/ folder](https://github.com/aspect-build/rules_ts/tree/main/examples).\n\nIf you'd like an example added, you can file a [Feature Request](https://github.com/aspect-build/rules_ts/issues/new/choose).\n\n## Usage\n\nSee the API documentation in [the docs/ folder](https://github.com/aspect-build/rules_ts/tree/main/docs).\n\n### From a BUILD file\n\nThe most common use is with the [`ts_project` macro](./docs/rules.md#ts_project) which invokes the\n[`tsc` CLI](https://www.typescriptlang.org/docs/handbook/compiler-options.html) to transform\nsource files like `.ts` files into outputs such as `.js` and `.d.ts` files.\n\nWe encourage you to read about the `transpiler` property which lets you use a faster tool like\nBabel or SWC to produce the `.js` files, so you don't have to wait for type-checking in your fast\ndevelopment loop.\n\n### In a macro\n\nMany organizations set default values, so it's common to write a [macro] to wrap `ts_project`, then\nensure that your developers load your macro rather than loading from `@aspect_rules_ts` directly.\n\n[macro]: https://bazel.build/extending/macros\n\n### BUILD file generation\n\nAspect provides an alpha preview of our TypeScript BUILD file generator as part of the\n[Aspect CLI](https://aspect.build/cli). Run `aspect configure` to create or update BUILD.bazel files\nas you edit TypeScript sources.\n\n### Advanced: custom rules\n\nIf you know how to write Bazel rules, you might find that `ts_project` doesn't do what you want.\n\nOne way to customize it is to peel off one layer of indirection, by calling the `ts_project_rule`\ndirectly. This bypasses our default setting logic, and also the validation program which checks that\nts_project attributes are well-formed.\n\nYou can also write a custom rule from scratch. We expose helper functions from /ts/private in this\nrepo. Be aware that these are not a public API, so you may have to account for breaking changes\nwhich aren't subject to our usual semver policy.\n"
+release: {
+  title: "v0.5.0"
+  description: "WORKSPACE snippet:\n```starlark\nload(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")\nhttp_archive(\n    name = \"aspect_rules_ts\",\n    sha256 = \"1f4854ac104881b62d341c19d6150d32ba582351b24a1f0b761c218456057017\",\n    strip_prefix = \"rules_ts-0.5.0\",\n    url = \"https://github.com/aspect-build/rules_ts/archive/refs/tags/v0.5.0.tar.gz\",\n)\n\n##################\n# rules_ts setup #\n##################\n# Fetches the rules_ts dependencies.\n# If you want to have a different version of some dependency,\n# you should fetch it *before* calling this.\n# Alternatively, you can skip calling this function, so long as you've\n# already fetched all the dependencies.\nload(\"@aspect_rules_ts//ts:repositories.bzl\", \"LATEST_VERSION\", \"rules_ts_dependencies\")\n\nrules_ts_dependencies(ts_version = LATEST_VERSION)\n\n# Fetch and register node, if you haven't already\nload(\"@rules_nodejs//nodejs:repositories.bzl\", \"DEFAULT_NODE_VERSION\", \"nodejs_register_toolchains\")\n\nnodejs_register_toolchains(\n    name = \"node\",\n    node_version = DEFAULT_NODE_VERSION,\n)\n```\n\n\n## What's Changed\n* refactor: remove rules_swc dep, point to bazel-examples by @alexeagle in https://github.com/aspect-build/rules_ts/pull/36\n* chore: update to rules_js 0.11.0 by @gregmagolan in https://github.com/aspect-build/rules_ts/pull/38\n\n\n**Full Changelog**: https://github.com/aspect-build/rules_ts/compare/v0.4.0...v0.5.0"
+  preprelease: true
+  publish_time: {
+    seconds: 1654298167
+  }
+}
+module_file: {
+  name: "aspect_rules_ts"
+  version: "0.0.0"
+  compatibility_level: 1
+  dependencies: {
+    name: "bazel_skylib"
+    version: "1.3.0"
+  }
+  dependencies: {
+    name: "rules_nodejs"
+    version: "5.5.3"
+    dev_dependency: true
+  }
+  dependencies: {
+    name: "aspect_rules_js"
+    version: "1.19.0"
+  }
+  dependencies: {
+    name: "aspect_bazel_lib"
+    version: "1.27.2"
   }
 }

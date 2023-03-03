@@ -50,8 +50,8 @@ message Version {
   // yanked denotes if this version is yanked.
   bool yanked = 5;
 
-  // releases made at this version.
-  repeated Release releases = 6;
+  // release made at this version.
+  Release release = 6;
 
   // module_file is the parsed MODULE.bazel file. If set, this version is a
   // valid bzlmod.
@@ -102,9 +102,30 @@ message ModuleFile {
   // compatibility level of the module.
   int32 compatibility_level = 4;
 
-  repeated string execution_platforms_to_register = 5;
+  // dependencies of the module.
+  repeated Dependency dependencies = 5;
 
-  repeated string toolchains_to_register = 6;
+  // platforms_to_register is the list of platforms to register.
+  repeated string execution_platforms_to_register = 6;
+
+  // toolchains_to_register is the list of toolchains to register.
+  repeated string toolchains_to_register = 7;
+
+  // Dependency is a dependency of a module.
+  message Dependency {
+    // name of the dependency.
+    string name = 1;
+
+    // version of the dependency.
+    string version = 2;
+
+    // repo_name is the name of the external repo representing this dependency.
+    // This is by default the name of the module.
+    string repo_name = 3;
+
+    // dev_dependency marks if this dependency is a dev dependency.
+    bool dev_dependency = 4;
+  }
 }
 
 // ProjectPopularity contains stats by measuring the user engagement.

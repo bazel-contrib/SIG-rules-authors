@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gocarina/gocsv"
+	intervalpb "google.golang.org/genproto/googleapis/type/interval"
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
@@ -28,6 +29,8 @@ type Descriptor[P Point] struct {
 	Align AlignFunc
 	// NewPoint creates a new point for a given timestamp.
 	NewPoint func(time.Time) P
+	// Retention is the maximum age of a point in the time series.
+	Retention time.Duration
 }
 
 // Store is a time series store. Points in the store are distinguised by their
@@ -93,22 +96,33 @@ func (ts *Store[P]) Flush() error {
 	return os.WriteFile(ts.name+".metadata", b, 0644)
 }
 
-// UpdateTime returns the last time the time series was updated.
-func (ts *Store[P]) UpdateTime() time.Time {
-	return ts.metadata.UpdateTime.AsTime()
+// Window returns the start and end time of the time series window.
+func (ts *Store[P]) Window() (start, end time.Time) {
+	if ts.metadata.Window == nil {
+		return time.Time{}, time.Now().Add(-ts.desc.Retention)
+	}
+	return ts.metadata.Window.StartTime.AsTime(), ts.metadata.Window.EndTime.AsTime()
 }
 
-// SetUpdateTime sets the last time the time series was updated.
-func (ts *Store[P]) SetUpdateTime(t time.Time) {
-	ts.metadata.UpdateTime = timestamppb.New(t)
+// ShiftWindow shifts the time series window to the given end time.
+func (ts *Store[P]) ShiftWindow(end time.Time) {
+	start := end.Add(-ts.desc.Retention)
+	ts.metadata.Window = &intervalpb.Interval{
+		StartTime: timestamppb.New(start),
+		EndTime:   timestamppb.New(end),
+	}
+	ts.removeStatePoints(start)
 }
 
-// RemoveStalePoints removes points that are before notBefore.
-func (ts *Store[P]) RemoveStalePoints(notBefore time.Time) {
-	for len(ts.points) > 0 && ts.points[0].Timestamp().Before(notBefore) {
-		var p P
-		p, ts.points = ts.points[0], ts.points[1:]
-		delete(ts.idx, p.Timestamp().Unix())
+// removeStalePoints removes points that are before notBefore.
+func (ts *Store[P]) removeStatePoints(start time.Time) {
+	for len(ts.points) > 0 {
+		t := ts.points[0].Timestamp()
+		if !t.Before(start) {
+			break
+		}
+		ts.points = ts.points[1:]
+		delete(ts.idx, t.Unix())
 	}
 }
 

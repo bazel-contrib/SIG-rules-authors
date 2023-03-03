@@ -36,17 +36,11 @@ func (r *repo) UpdateCommitActivity(ctx context.Context) error {
 		return err
 	}
 
-	// TODO(@ashi009): Change the store to automatically remove stale points. Say,
-	// add a stale evict policy.
-	now := time.Now().UTC()
-	cutoff := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location()).AddDate(0, 0, -365)
-	s.RemoveStalePoints(cutoff)
-
+	now := time.Now()
 	ps, _, err := r.cli.Repositories.ListParticipation(ctx, r.owner, r.name)
 	if err != nil {
 		return err
 	}
-
 	// ListParticipation returns the last 52 weeks of data, but it doesn't specify
 	// when a week starts. We are using ISO 8601
 	for i := range ps.All {
@@ -56,7 +50,7 @@ func (r *repo) UpdateCommitActivity(ctx context.Context) error {
 		p.OwnerCount = ps.Owner[i]
 	}
 
-	s.SetUpdateTime(now)
+	s.ShiftWindow(now)
 	return s.Flush()
 }
 
@@ -89,15 +83,8 @@ func (r *repo) UpdateIssueActivity(ctx context.Context) error {
 		return err
 	}
 
-	// TODO(@ashi009): Change the store to automatically remove stale points. Say,
-	// add a stale evict policy.
-	now := time.Now().UTC()
-	cutoff := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location()).AddDate(0, 0, -365)
-	s.RemoveStalePoints(cutoff)
-	lastUpdate := s.UpdateTime()
-	if lastUpdate.Before(cutoff) {
-		lastUpdate = cutoff
-	}
+	_, lastUpdate := s.Window()
+	now := time.Now()
 
 	// We want to add data from [lastUpdate, now), all new points need to check
 	// against those boundaries.
@@ -161,6 +148,6 @@ func (r *repo) UpdateIssueActivity(ctx context.Context) error {
 		}
 	}
 
-	s.SetUpdateTime(now)
+	s.ShiftWindow(now)
 	return s.Flush()
 }

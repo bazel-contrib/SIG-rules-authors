@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/bazel-contrib/SIG-rules-authors/experimental/rules-keeper/timeseries"
@@ -13,6 +13,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/google/go-github/v50/github"
 	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/bazel-contrib/SIG-rules-authors/experimental/rules-keeper/proto"
@@ -21,18 +22,23 @@ import (
 func (r *repo) UpdateVersions(ctx context.Context) error {
 	glog.Infof("Updating versions for %s/%s", r.owner, r.name)
 
-	var vs []*Version
-	m := make(map[string]*Version)
+	m := make(map[string]*VersionStore)
 
 	repo, _, err := r.cli.Repositories.Get(ctx, r.owner, r.name)
 	if err != nil {
 		return err
 	}
-	v, err := r.getVersionWithStats(ctx, repo.GetDefaultBranch())
+	vs, err := r.loadVersionStore(ctx, repo.GetDefaultBranch())
 	if err != nil {
 		return err
 	}
-	vs = append(vs, v)
+	v, err := r.getVersion(ctx, repo.GetDefaultBranch())
+	if err != nil {
+		return err
+	}
+	vs.Version.Reset()
+	proto.Merge(&vs.Version, v)
+	vs.Flush()
 
 	for it := r.ListTags(ctx); ; {
 		tag, err := it.Next()
@@ -42,16 +48,20 @@ func (r *repo) UpdateVersions(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
-		v, err := r.getVersionWithStats(ctx, tag.GetName())
+		vs, err := r.loadVersionStore(ctx, tag.GetName())
 		if err != nil {
 			return err
 		}
-		vs = append(vs, v)
-		m[tag.GetName()] = v
+		v, err := r.getVersion(ctx, repo.GetDefaultBranch())
+		if err != nil {
+			return err
+		}
+		vs.Version.Reset()
+		proto.Merge(&vs.Version, v)
+		m[tag.GetName()] = vs
 	}
 
 	now := time.Now()
-
 	for it := r.ListReleases(ctx); ; {
 		rel, err := it.Next()
 		if err == io.EOF {
@@ -76,18 +86,15 @@ func (r *repo) UpdateVersions(ctx context.Context) error {
 			})
 			dlc += a.GetDownloadCount()
 		}
-		v.Releases = append(v.Releases, &pb.Release{
+		v.Release = &pb.Release{
 			Title:       rel.GetName(),
 			Description: rel.GetBody(),
 			Preprelease: rel.GetPrerelease(),
 			PublishTime: timestamppb.New(rel.GetPublishedAt().Time),
 			Assets:      as,
-		})
+		}
 		v.stats.GetOrCreatePointAt(now).DowloadCount += dlc
-		v.stats.SetUpdateTime(now)
-	}
-
-	for _, v := range vs {
+		v.stats.ShiftWindow(now)
 		if err := v.Flush(); err != nil {
 			return err
 		}
@@ -96,46 +103,42 @@ func (r *repo) UpdateVersions(ctx context.Context) error {
 	return nil
 }
 
-type Version struct {
-	owner string
-	repo  string
-	ref   string
-	*pb.Version
+type VersionStore struct {
+	name string
+	pb.Version
 	stats *timeseries.Store[*VersionStatsPoint]
 }
 
-// TODO(@ashi009): refactor this.
-func (v *Version) Flush() error {
-	b, err := prototext.MarshalOptions{Multiline: true}.Marshal(v.Version)
-	if err != nil {
-		return err
+func (r *repo) loadVersionStore(ctx context.Context, tag string) (*VersionStore, error) {
+	name := fmt.Sprintf("store/%s/%s/versions/%s", r.owner, r.name, tag)
+	b, err := os.ReadFile(name + "/METADATA")
+	if err != nil && !os.IsNotExist(err) {
+		return nil, err
 	}
-	name := fmt.Sprintf("store/%s/%s/versions/%s/METADATA", v.owner, v.repo, v.ref)
-	if err := os.MkdirAll(filepath.Dir(name), 0755); err != nil {
-		return err
+	s := &VersionStore{
+		name: name,
 	}
-	if err := os.WriteFile(name, b, 0644); err != nil {
-		return err
+	if err := prototext.Unmarshal(b, &s.Version); err != nil {
+		return nil, err
 	}
-	return v.stats.Flush()
+	if s.stats, err = timeseries.Load(VersionStats, fmt.Sprintf("%s/metrics/version_stats", name)); err != nil {
+		return nil, err
+	}
+	return s, nil
 }
 
-func (r *repo) getVersionWithStats(ctx context.Context, ref string) (*Version, error) {
-	v, err := r.getVersion(ctx, ref)
-	if err != nil {
-		return nil, err
+func (s *VersionStore) Flush() error {
+	if err := os.MkdirAll(s.name, 0755); err != nil {
+		return err
 	}
-	s, err := r.loadVersionStatsStore(ctx, ref)
+	b, err := prototext.MarshalOptions{Multiline: true}.Marshal(&s.Version)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &Version{
-		owner:   r.owner,
-		repo:    r.name,
-		ref:     ref,
-		Version: v,
-		stats:   s,
-	}, nil
+	if err := os.WriteFile(s.name+"/METADATA", b, 0644); err != nil {
+		return err
+	}
+	return s.stats.Flush()
 }
 
 func (r *repo) getVersion(ctx context.Context, ref string) (*pb.Version, error) {
@@ -143,44 +146,31 @@ func (r *repo) getVersion(ctx context.Context, ref string) (*pb.Version, error) 
 	if err != nil {
 		return nil, err
 	}
-	rf, _, err := r.cli.Repositories.GetReadme(ctx, r.owner, r.name, &github.RepositoryContentGetOptions{
-		Ref: ref,
-	})
-	// TODO(@ashi009): handle 404 (no readme).
-	if err != nil {
+	readme, err := r.GetReadme(ctx, ref)
+	if err != nil && !isNotFound(err) {
 		return nil, err
 	}
-	rc, err := rf.GetContent()
-	if err != nil {
-		return nil, err
-	}
-	mf, err := r.getModuleFile(ctx, ref)
+	m, err := r.getModuleFile(ctx, ref)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.Version{
 		Ref:        ref,
 		Sha:        c.GetSHA(),
-		Readme:     rc,
-		ModuleFile: mf,
+		Readme:     readme,
+		ModuleFile: m,
 	}, nil
 }
 
 func (r *repo) getModuleFile(ctx context.Context, ref string) (*pb.ModuleFile, error) {
-	fc, _, _, err := r.cli.Repositories.GetContents(ctx, r.owner, r.name, "MODULE.bazel", &github.RepositoryContentGetOptions{
-		Ref: ref,
-	})
-	// It's ok if the module file doesn't exist.
+	c, err := r.GetContent(ctx, ref, "MODULE.bazel")
 	if err != nil {
-		return nil, nil
-	}
-	rc, err := fc.GetContent()
-	if err != nil {
+		if isNotFound(err) {
+			return nil, nil
+		}
 		return nil, err
 	}
-	// TODO(@ashi009): parse the module file.
-	_ = rc
-	return &pb.ModuleFile{}, nil
+	return parseModuleFile("MODULE.bazel", c)
 }
 
 type VersionStatsPoint struct {
@@ -199,6 +189,9 @@ var VersionStats = &timeseries.Descriptor[*VersionStatsPoint]{
 	Align: timeseries.AlignToSecond,
 }
 
-func (r *repo) loadVersionStatsStore(ctx context.Context, tag string) (*timeseries.Store[*VersionStatsPoint], error) {
-	return timeseries.Load(VersionStats, fmt.Sprintf("store/%s/%s/versions/%s/metrics/version_stats", r.owner, r.name, tag))
+func isNotFound(err error) bool {
+	if err, ok := err.(*github.ErrorResponse); ok && err.Response.StatusCode == http.StatusNotFound {
+		return true
+	}
+	return false
 }

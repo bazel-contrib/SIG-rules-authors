@@ -1,4 +1,14 @@
-update_time:  {
-  seconds:  1677692270
-  nanos:  854643000
+update_time: {
+  seconds: 1677726480
+  nanos: 833899000
+}
+window: {
+  start_time: {
+    seconds: 1677830830
+    nanos: 202420000
+  }
+  end_time: {
+    seconds: 1677830830
+    nanos: 202420000
+  }
 }

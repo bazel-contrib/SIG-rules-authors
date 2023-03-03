@@ -144,7 +144,16 @@ func (r *repo) GetReadme(ctx context.Context, ref string) (string, error) {
 		return "", err
 	}
 	return c.GetContent()
+}
 
+func (r *repo) GetContent(ctx context.Context, ref, path string) (string, error) {
+	fc, _, _, err := r.cli.Repositories.GetContents(ctx, r.owner, r.name, path, &github.RepositoryContentGetOptions{
+		Ref: ref,
+	})
+	if err != nil {
+		return "", err
+	}
+	return fc.GetContent()
 }
 
 func (r *repo) ListTags(ctx context.Context) *iterator[*github.RepositoryTag] {
