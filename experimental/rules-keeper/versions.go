@@ -52,7 +52,7 @@ func (r *repo) UpdateVersions(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
-		v, err := r.getVersion(ctx, repo.GetDefaultBranch())
+		v, err := r.getVersion(ctx, tag.GetName())
 		if err != nil {
 			return err
 		}
@@ -186,7 +186,8 @@ var VersionStats = &timeseries.Descriptor[*VersionStatsPoint]{
 	NewPoint: func(t time.Time) *VersionStatsPoint {
 		return &VersionStatsPoint{Time: timeseries.DateTime{Time: t}}
 	},
-	Align: timeseries.AlignToSecond,
+	Align:     timeseries.AlignToSecond,
+	Retention: timeSeriesRetention,
 }
 
 func isNotFound(err error) bool {

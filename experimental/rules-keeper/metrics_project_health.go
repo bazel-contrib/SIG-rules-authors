@@ -30,7 +30,8 @@ var CommunityHealth = &timeseries.Descriptor[*CommunityHealthPoint]{
 	NewPoint: func(t time.Time) *CommunityHealthPoint {
 		return &CommunityHealthPoint{Time: timeseries.DateTime{Time: t}}
 	},
-	Align: timeseries.AlignToSecond,
+	Align:     timeseries.AlignToSecond,
+	Retention: timeSeriesRetention,
 }
 
 func (r *repo) loadCommunityHealthStore() (*timeseries.Store[*CommunityHealthPoint], error) {

@@ -4,11 +4,11 @@ update_time: {
 }
 window: {
   start_time: {
-    seconds: 1677830831
-    nanos: 841787000
+    seconds: 1677831532
+    nanos: 734594000
   }
   end_time: {
-    seconds: 1677830831
-    nanos: 841787000
+    seconds: 1677831532
+    nanos: 734594000
   }
 }

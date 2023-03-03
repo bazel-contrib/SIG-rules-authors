@@ -5,6 +5,7 @@ import (
 	"flag"
 	"io"
 	"strings"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/v50/github"
@@ -12,11 +13,12 @@ import (
 )
 
 var (
-	appID         int64 = 290065
-	privateKey          = "appventure-test.2023-02-06.private-key.pem"
-	personalToken       = ""
-	repoOwner           = ""
-	repoName            = ""
+	appID               int64 = 290065
+	privateKey                = "appventure-test.2023-02-06.private-key.pem"
+	personalToken             = ""
+	repoOwner                 = ""
+	repoName                  = ""
+	timeSeriesRetention       = 366 * 24 * time.Hour // Roughly a year.
 )
 
 func init() {
@@ -25,6 +27,7 @@ func init() {
 	flag.StringVar(&personalToken, "personal_token", personalToken, "The personal token to use for the Github API. When set, instead of using App credential to fetch all installed repos, you must specify the owner and repo to update metrics.")
 	flag.StringVar(&repoOwner, "owner", repoOwner, "The owner of the repo to update metrics. Must be specified when using personal token.")
 	flag.StringVar(&repoName, "repo", repoName, "The name of the repo to update metrics. Must be specified when using personal token.")
+	flag.DurationVar(&timeSeriesRetention, "time_series_retention", timeSeriesRetention, "The retention of the time series data.")
 }
 
 var releaseContentType = map[string]bool{

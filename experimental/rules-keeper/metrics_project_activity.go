@@ -23,7 +23,8 @@ var CommitActivity = &timeseries.Descriptor[*CommitActivityPoint]{
 	NewPoint: func(t time.Time) *CommitActivityPoint {
 		return &CommitActivityPoint{Date: timeseries.Date{Time: t}}
 	},
-	Align: timeseries.AlignToISO8601WeekStartDayInUTC,
+	Align:     timeseries.AlignToISO8601WeekStartDayInUTC,
+	Retention: timeSeriesRetention,
 }
 
 func (r *repo) loadCommitActivityStore() (*timeseries.Store[*CommitActivityPoint], error) {
@@ -70,7 +71,8 @@ var IssueActivity = &timeseries.Descriptor[*IssueActivityPoint]{
 	NewPoint: func(t time.Time) *IssueActivityPoint {
 		return &IssueActivityPoint{Date: timeseries.Date{Time: t}}
 	},
-	Align: timeseries.AlignToDayInUTC,
+	Align:     timeseries.AlignToDayInUTC,
+	Retention: timeSeriesRetention,
 }
 
 func (r *repo) loadIssueActivtyStore() (*timeseries.Store[*IssueActivityPoint], error) {

@@ -16,7 +16,7 @@ import (
 func parseModuleFile(filename string, src any) (*pb.ModuleFile, error) {
 	var mf pb.ModuleFile
 	predeclared := starlark.StringDict{
-		"module": starlark.NewBuiltin("module", func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		"module": starlark.NewBuiltin("module", func(_ *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 			var (
 				ignored                                   starlark.Value
 				bazelCompatibility, platforms, toolchains *starlark.List
@@ -43,14 +43,14 @@ func parseModuleFile(filename string, src any) (*pb.ModuleFile, error) {
 			}
 			return starlark.None, nil
 		}),
-		"bazel_dep": starlark.NewBuiltin("bazel_dep", func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		"bazel_dep": starlark.NewBuiltin("bazel_dep", func(_ *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 			var (
 				ignored starlark.Value
 				dep     pb.ModuleFile_Dependency
 			)
 			if err := starlark.UnpackArgs(b.Name(), args, kwargs,
 				"name", &dep.Name,
-				"version", &dep.Version,
+				"version?", &dep.Version,
 				"repo_name?", &ignored,
 				"dev_dependency?", &dep.DevDependency,
 			); err != nil {
@@ -59,18 +59,23 @@ func parseModuleFile(filename string, src any) (*pb.ModuleFile, error) {
 			mf.Dependencies = append(mf.Dependencies, &dep)
 			return starlark.None, nil
 		}),
-		"register_execution_platforms": starlark.NewBuiltin("register_execution_platforms", func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		"register_execution_platforms": starlark.NewBuiltin("register_execution_platforms", func(_ *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 			mf.ExecutionPlatformsToRegister = appendList(mf.ExecutionPlatformsToRegister, starlark.NewList(args))
 			return starlark.None, nil
 		}),
-		"register_toolchains": starlark.NewBuiltin("register_toolchains", func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		"register_toolchains": starlark.NewBuiltin("register_toolchains", func(_ *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 			mf.ToolchainsToRegister = appendList(mf.ToolchainsToRegister, starlark.NewList(args))
 			return starlark.None, nil
 		}),
-		"use_extension": starlark.NewBuiltin("use_extension", func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		"use_extension": starlark.NewBuiltin("use_extension", func(_ *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 			return noopExtension{}, nil
 		}),
-		"use_repo": starlark.NewBuiltin("use_repo", noop),
+		"archive_override":          starlark.NewBuiltin("archive_override", noop),
+		"git_override":              starlark.NewBuiltin("git_override", noop),
+		"local_path_override":       starlark.NewBuiltin("local_path_override", noop),
+		"multiple_version_override": starlark.NewBuiltin("multiple_version_override", noop),
+		"single_version_override":   starlark.NewBuiltin("single_version_override", noop),
+		"use_repo":                  starlark.NewBuiltin("use_repo", noop),
 	}
 
 	thread := &starlark.Thread{
@@ -98,7 +103,7 @@ func appendList(s []string, l *starlark.List) []string {
 	return s
 }
 
-func noop(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+func noop(_ *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	return starlark.None, nil
 }
 

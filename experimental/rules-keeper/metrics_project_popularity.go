@@ -37,7 +37,8 @@ var RepoStats = &timeseries.Descriptor[*RepoStatsPoint]{
 	NewPoint: func(t time.Time) *RepoStatsPoint {
 		return &RepoStatsPoint{Time: timeseries.DateTime{Time: t}}
 	},
-	Align: timeseries.AlignToSecond,
+	Align:     timeseries.AlignToSecond,
+	Retention: timeSeriesRetention,
 }
 
 func (r *repo) loadRepoStatStore() (*timeseries.Store[*RepoStatsPoint], error) {
@@ -79,7 +80,8 @@ var Traffic = &timeseries.Descriptor[*TrafficPoint]{
 	NewPoint: func(t time.Time) *TrafficPoint {
 		return &TrafficPoint{Date: timeseries.Date{Time: t}}
 	},
-	Align: timeseries.AlignToDayInUTC, // TODO(@ashi009): this should be the start of UTC weeks.
+	Align:     timeseries.AlignToISO8601WeekStartDayInUTC,
+	Retention: timeSeriesRetention,
 }
 
 func (r *repo) loadTrafficStore() (*timeseries.Store[*TrafficPoint], error) {
