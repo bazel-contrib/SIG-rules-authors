@@ -1,0 +1,10 @@
+window: {
+  start_time: {
+    seconds: 1646213417
+    nanos: 352203000
+  }
+  end_time: {
+    seconds: 1677835817
+    nanos: 352203000
+  }
+}

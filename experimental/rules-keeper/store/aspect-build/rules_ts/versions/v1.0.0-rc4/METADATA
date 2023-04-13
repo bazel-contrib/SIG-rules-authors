@@ -1,0 +1,32 @@
+ref: "v1.0.0-rc4"
+sha: "ab68b6bf873c3de66bf323be6c8ba3791b180d6e"
+readme: "# Bazel rules for ts\n\nHigh-performance alternative to the `@bazel/typescript` npm package, based on\nhttps://github.com/aspect-build/rules_js.\n\nThe `ts_project` rule here is identical to the one in rules_nodejs, making it easy to migrate.\n\nSince rules_js always runs tools from the bazel-out tree, rules_ts naturally fixes the usability bugs with rules_nodejs.\n\n- Freely mix generated `*.ts` and `tsconfig.json` files in the bazel-out tree with source files\n- Fixes the need for any `rootDirs` settings in `tsconfig.json` as reported in https://github.com/microsoft/TypeScript/issues/37378\n- \"worker mode\" for `ts_project` now shares workers across all targets, rather than requiring one worker pool per target\n\n## Installation\n\nFrom the release you wish to use:\n<https://github.com/aspect-build/rules_ts/releases>\ncopy the WORKSPACE snippet into your `WORKSPACE` file.\n\nPlease note that rules_ts does not work with `--worker_sandboxing`.\n"
+release: {
+  title: "v1.0.0-rc4"
+  description: "WORKSPACE snippet:\n```starlark\nload(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")\nhttp_archive(\n    name = \"aspect_rules_ts\",\n    sha256 = \"743f0e988e4e3f1e25e52c79f9dc3da1ddd77507ae88787ae95b4e70c537872b\",\n    strip_prefix = \"rules_ts-1.0.0-rc4\",\n    url = \"https://github.com/aspect-build/rules_ts/archive/refs/tags/v1.0.0-rc4.tar.gz\",\n)\n\n##################\n# rules_ts setup #\n##################\n# Fetches the rules_ts dependencies.\n# If you want to have a different version of some dependency,\n# you should fetch it *before* calling this.\n# Alternatively, you can skip calling this function, so long as you've\n# already fetched all the dependencies.\nload(\"@aspect_rules_ts//ts:repositories.bzl\", \"LATEST_VERSION\", \"rules_ts_dependencies\")\n\nrules_ts_dependencies(ts_version = LATEST_VERSION)\n\n# Fetch and register node, if you haven't already\nload(\"@rules_nodejs//nodejs:repositories.bzl\", \"DEFAULT_NODE_VERSION\", \"nodejs_register_toolchains\")\n\nnodejs_register_toolchains(\n    name = \"node\",\n    node_version = DEFAULT_NODE_VERSION,\n)\n```\n\n\n## What's Changed\n* fix: add file info to error for `tsc` overreach by @vpanta in https://github.com/aspect-build/rules_ts/pull/129\n* fix: `ts_project` fails if `root_dir` used deep in source tree by @vpanta in https://github.com/aspect-build/rules_ts/pull/130\n* chore(deps): update dependency io_bazel_rules_go to v0.35.0 by @renovate in https://github.com/aspect-build/rules_ts/pull/148\n* chore(deps): update dependency rules_nodejs to v5.5.4 by @renovate in https://github.com/aspect-build/rules_ts/pull/147\n* chore: update to aspect_bazel_lib 1.11.8 by @gregmagolan in https://github.com/aspect-build/rules_ts/pull/149\n* chore(deps): remove bazel-integration-testing  by @jbedard in https://github.com/aspect-build/rules_ts/pull/153\n* chore(deps): update dependency aspect_bazel_lib to v1.12.0 by @renovate in https://github.com/aspect-build/rules_ts/pull/155\n* chore(deps): update dependency aspect_rules_js to v1.3.1 by @renovate in https://github.com/aspect-build/rules_ts/pull/156\n* docs: mention --worker_sandboxing incompatibility by @tsawada in https://github.com/aspect-build/rules_ts/pull/154\n* chore: update to  aspect_bazel_lib 1.12.1 by @gregmagolan in https://github.com/aspect-build/rules_ts/pull/164\n* chore(deps): update dependency aspect_rules_js to v1.4.0 by @renovate in https://github.com/aspect-build/rules_ts/pull/165\n* chore: add example --config=debug settings to .bazelrc.common and example debuggle target with sourcemaps back to .ts sources by @gregmagolan in https://github.com/aspect-build/rules_ts/pull/168\n* chore(deps): update dependency rules_nodejs to v5.6.0 by @renovate in https://github.com/aspect-build/rules_ts/pull/157\n* fix: report failedLookups twice by @thesayyn in https://github.com/aspect-build/rules_ts/pull/169\n* test: add path_mapping example by @jbedard in https://github.com/aspect-build/rules_ts/pull/172\n* fix: validate preserveSymlinks tsconfig option is not set by @jbedard in https://github.com/aspect-build/rules_ts/pull/171\n* fix: allow composite projects by @alexeagle in https://github.com/aspect-build/rules_ts/pull/176\n* refactor: TsConfigInfo uses depsets by @alexeagle in https://github.com/aspect-build/rules_ts/pull/178\n* fix: validate tsconfig dictionary values by @jbedard in https://github.com/aspect-build/rules_ts/pull/173\n* Chore/export ts config by @sallustfire in https://github.com/aspect-build/rules_ts/pull/174\n\n## New Contributors\n* @vpanta made their first contribution in https://github.com/aspect-build/rules_ts/pull/129\n* @tsawada made their first contribution in https://github.com/aspect-build/rules_ts/pull/154\n* @sallustfire made their first contribution in https://github.com/aspect-build/rules_ts/pull/174\n\n**Full Changelog**: https://github.com/aspect-build/rules_ts/compare/v1.0.0-rc3...v1.0.0-rc4"
+  preprelease: true
+  publish_time: {
+    seconds: 1665712032
+  }
+}
+module_file: {
+  name: "aspect_rules_ts"
+  version: "0.0.0"
+  compatibility_level: 1
+  dependencies: {
+    name: "bazel_skylib"
+    version: "1.1.1"
+  }
+  dependencies: {
+    name: "rules_nodejs"
+    version: "5.5.0"
+  }
+  dependencies: {
+    name: "aspect_rules_js"
+    version: "1.1.0"
+  }
+  dependencies: {
+    name: "aspect_bazel_lib"
+    version: "1.12.1"
+  }
+}

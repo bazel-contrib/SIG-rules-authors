@@ -1,0 +1,11 @@
+ref: "v0.2.1"
+sha: "c2824a7882b376a7d53b828b8006f37cffa1fe58"
+readme: "# Bazel rules for ts\n\nHigh-performance alternative to the `@bazel/typescript` npm package, based on\nAspect's rules_js.\n\n## Installation\n\nFrom the release you wish to use:\n<https://github.com/aspect-build/rules_ts/releases>\ncopy the WORKSPACE snippet into your `WORKSPACE` file.\n"
+release: {
+  title: "v0.2.1"
+  description: "WORKSPACE snippet:\n```starlark\nload(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")\nhttp_archive(\n    name = \"aspect_rules_ts\",\n    sha256 = \"0da8f616f58bd79e8b7b0946f96d4adda8b02d3ec9aca33037cecfef316a1597\",\n    strip_prefix = \"rules_ts-0.2.1\",\n    url = \"https://github.com/aspect-build/rules_ts/archive/refs/tags/v0.2.1.tar.gz\",\n)\n\n##################\n# rules_ts setup #\n##################\n# Fetches the rules_ts dependencies.\n# If you want to have a different version of some dependency,\n# you should fetch it *before* calling this.\n# Alternatively, you can skip calling this function, so long as you've\n# already fetched all the dependencies.\nload(\"@aspect_rules_ts//ts:repositories.bzl\", \"LATEST_VERSION\", \"rules_ts_dependencies\")\n\nrules_ts_dependencies(ts_version = LATEST_VERSION)\n\n# Fetch and register node, if you haven't already\nload(\"@rules_nodejs//nodejs:repositories.bzl\", \"DEFAULT_NODE_VERSION\", \"nodejs_register_toolchains\")\n\nnodejs_register_toolchains(\n    name = \"node\",\n    node_version = DEFAULT_NODE_VERSION,\n)\n```\n\n\n## What's Changed\n* Allow generated files mixed with sources by @alexeagle in https://github.com/aspect-build/rules_ts/pull/17\n* make ts_options_validator output deterministc by @alexeagle in https://github.com/aspect-build/rules_ts/pull/22\n* add example coverage for using 1p/3p deps with types by @alexeagle in https://github.com/aspect-build/rules_ts/pull/21\n\n\n**Full Changelog**: https://github.com/aspect-build/rules_ts/compare/v0.2.0...v0.2.1"
+  preprelease: true
+  publish_time: {
+    seconds: 1652910042
+  }
+}

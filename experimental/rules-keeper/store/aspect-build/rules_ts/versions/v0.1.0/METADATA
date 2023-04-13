@@ -1,0 +1,11 @@
+ref: "v0.1.0"
+sha: "89670294a055d8da2d492931997db7fd9b80aee6"
+readme: "# Bazel rules for ts\n\nHigh-performance alternative to the `@bazel/typescript` npm package, based on\nAspect's rules_js.\n\n## Installation\n\nFrom the release you wish to use:\n<https://github.com/aspect-build/rules_ts/releases>\ncopy the WORKSPACE snippet into your `WORKSPACE` file.\n"
+release: {
+  title: "v0.1.0"
+  description: "WORKSPACE snippet:\n```starlark\nload(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")\nhttp_archive(\n    name = \"aspect_rules_ts\",\n    sha256 = \"07e6623b246d2c1d4c4024edb051fc92a824ac5e6029cb19ba639dc6bcd5973b\",\n    strip_prefix = \"rules_ts-0.1.0\",\n    url = \"https://github.com/aspect-build/rules_ts/archive/refs/tags/v0.1.0.tar.gz\",\n)\n\n# Fetches the rules_ts dependencies.\n# If you want to have a different version of some dependency,\n# you should fetch it *before* calling this.\n# Alternatively, you can skip calling this function, so long as you've\n# already fetched all the dependencies.\nload(\"@aspect_rules_ts//ts:repositories.bzl\", \"rules_ts_dependencies\")\nrules_ts_dependencies()\n\n```\n\n\n**Full Changelog**: https://github.com/aspect-build/rules_ts/commits/v0.1.0"
+  preprelease: true
+  publish_time: {
+    seconds: 1651009598
+  }
+}

@@ -1,0 +1,32 @@
+ref: "v0.11.0"
+sha: "945cbd90026cb3f493a013a99f91a84572a51e79"
+readme: "# Bazel rules for ts\n\nHigh-performance alternative to the `@bazel/typescript` npm package, based on\nhttps://github.com/aspect-build/rules_js.\n\nThe `ts_project` rule here is identical to the one in rules_nodejs, making it easy to migrate.\n\nSince rules_js always runs tools from the bazel-out tree, rules_ts naturally fixes the usability bugs with rules_nodejs.\n\n- Freely mix generated `*.ts` and `tsconfig.json` files in the bazel-out tree with source files\n- Fixes the need for any `rootDirs` settings in `tsconfig.json` as reported in https://github.com/microsoft/TypeScript/issues/37378\n- \"worker mode\" for `ts_project` now shares workers across all targets, rather than requiring one worker pool per target\n\n## Installation\n\nFrom the release you wish to use:\n<https://github.com/aspect-build/rules_ts/releases>\ncopy the WORKSPACE snippet into your `WORKSPACE` file.\n"
+release: {
+  title: "v0.11.0"
+  description: "WORKSPACE snippet:\n```starlark\nload(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")\nhttp_archive(\n    name = \"aspect_rules_ts\",\n    sha256 = \"04373a49e49a97521a9fcf35dbca43360c94a84a51553ffbd754d6778a0b512d\",\n    strip_prefix = \"rules_ts-0.11.0\",\n    url = \"https://github.com/aspect-build/rules_ts/archive/refs/tags/v0.11.0.tar.gz\",\n)\n\n##################\n# rules_ts setup #\n##################\n# Fetches the rules_ts dependencies.\n# If you want to have a different version of some dependency,\n# you should fetch it *before* calling this.\n# Alternatively, you can skip calling this function, so long as you've\n# already fetched all the dependencies.\nload(\"@aspect_rules_ts//ts:repositories.bzl\", \"LATEST_VERSION\", \"rules_ts_dependencies\")\n\nrules_ts_dependencies(ts_version = LATEST_VERSION)\n\n# Fetch and register node, if you haven't already\nload(\"@rules_nodejs//nodejs:repositories.bzl\", \"DEFAULT_NODE_VERSION\", \"nodejs_register_toolchains\")\n\nnodejs_register_toolchains(\n    name = \"node\",\n    node_version = DEFAULT_NODE_VERSION,\n)\n```\n\n\n## What's Changed\n* fix: fix declaration file output with out_dir set by @jbedard in https://github.com/aspect-build/rules_ts/pull/71\n* fix: disable ts worker if custom tsc is provided by @jbedard in https://github.com/aspect-build/rules_ts/pull/78\n* test: add case for types output_group by @thesayyn in https://github.com/aspect-build/rules_ts/pull/83\n* test: add case for declaration_only by @thesayyn in https://github.com/aspect-build/rules_ts/pull/82\n* fix: allow tsc worker read outputs by @thesayyn in https://github.com/aspect-build/rules_ts/pull/81\n* fix: re-enable error when no outputs configured by @alexeagle in https://github.com/aspect-build/rules_ts/pull/84\n* test: add case for declaration_dir, out_dir and root_dir by @thesayyn in https://github.com/aspect-build/rules_ts/pull/87\n* fix: give better error when ts_project should be js_library by @alexeagle in https://github.com/aspect-build/rules_ts/pull/86\n* test: add case for jsx by @thesayyn in https://github.com/aspect-build/rules_ts/pull/89\n* fix: support package.json with type=module by @thesayyn in https://github.com/aspect-build/rules_ts/pull/90\n* perf: minimize the amount fs calls worker makes by @thesayyn in https://github.com/aspect-build/rules_ts/pull/77\n* test: test rootDirs + outDir by @jbedard in https://github.com/aspect-build/rules_ts/pull/74\n* feat: add support for .mts and .cts source files by @jbedard in https://github.com/aspect-build/rules_ts/pull/92\n* chore: format BUILD files with buildifier by @thesayyn in https://github.com/aspect-build/rules_ts/pull/93\n* fix: correctly invalidate failed lookups by @thesayyn in https://github.com/aspect-build/rules_ts/pull/91\n* test: add example of ts_project .d.ts source by @jbedard in https://github.com/aspect-build/rules_ts/pull/98\n* chore: add additional examples and TODOs for issues by @gregmagolan in https://github.com/aspect-build/rules_ts/pull/100\n* chore: update to aspect_bazel_lib 1.8.0 by @gregmagolan in https://github.com/aspect-build/rules_ts/pull/104\n* chore: update to aspect_rules_js to latest commit hash by @gregmagolan in https://github.com/aspect-build/rules_ts/pull/105\n* chore: update to aspect_bazel_lib 1.8.1 by @gregmagolan in https://github.com/aspect-build/rules_ts/pull/106\n* docs: one more reason why ts_project could produce no output by @thesayyn in https://github.com/aspect-build/rules_ts/pull/107\n* chore: update to aspect_bazel_lib 1.9.1 by @gregmagolan in https://github.com/aspect-build/rules_ts/pull/109\n\n## New Contributors\n* @jbedard made their first contribution in https://github.com/aspect-build/rules_ts/pull/71\n\n**Full Changelog**: https://github.com/aspect-build/rules_ts/compare/v0.10.0...v0.11.0"
+  preprelease: true
+  publish_time: {
+    seconds: 1659154073
+  }
+}
+module_file: {
+  name: "aspect_rules_ts"
+  version: "0.0.0"
+  compatibility_level: 1
+  dependencies: {
+    name: "bazel_skylib"
+    version: "1.1.1"
+  }
+  dependencies: {
+    name: "rules_nodejs"
+    version: "5.5.0"
+  }
+  dependencies: {
+    name: "aspect_rules_js"
+    version: "0.13.0"
+  }
+  dependencies: {
+    name: "aspect_bazel_lib"
+    version: "1.9.1"
+  }
+}
