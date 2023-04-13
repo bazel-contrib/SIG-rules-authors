@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/bazel-contrib/catalog-entry.schema.json",
   "title": "Ruleset Config",
   "type": "object",
