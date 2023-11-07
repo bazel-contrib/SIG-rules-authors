@@ -43,14 +43,10 @@ Criteria for accepting rule sets into this repo and avoid them from getting stal
 1. Must publish semver releases.
     - Optional: follow the same release pattern as the rules-template does.
 1. Must work with LTS Bazel version
+1. Must publish the rules to the [Bazel Central Registry](https://github.com/bazelbuild/bazel-central-registry), keep that CI green
 
 Where possible, the SIG would also prefer to reduce fragmentation.
 New projects will be evaluated for whether they duplicate existing ones, and if so whether that is warranted.
-
-When the [bzlmod](https://docs.bazel.build/versions/5.0.0/bzlmod.html) feature graduates from experimental,
-we'll also add the following criteria:
-
-1. Include the rules in bazel-central-registry, keep that CI green
 
 ### Adding Procedure
 
