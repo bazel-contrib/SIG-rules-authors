@@ -354,7 +354,7 @@ $ bazelisk run //:gazelle-update-repos
 Which is the equivalent of running:
 
 ```bash
-$ bazelist run //:gazelle update-repos -from_file=go.mod -to_macro=deps.bzl%go_dependencies -prune
+$ bazelisk run //:gazelle update-repos -from_file=go.mod -to_macro=deps.bzl%go_dependencies -prune
 ```
 
 The update-repos command is a very common way of running Gazelle. 
