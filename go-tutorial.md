@@ -176,6 +176,7 @@ import (
         "math/rand"
         "strconv"
         "time"
+        "fmt"
 )
 
 func Roll() string {
