@@ -249,7 +249,6 @@ Use your favorite editor and create a file named `WORKSPACE` in the root directo
 
 Edit the `WORKSPACE` file and include the following Starlark code.
 
-
 ```python
 # use http_archive to download bazel rules_go
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -306,6 +305,29 @@ Gazelle site to use the latest versions.  Also, update the `go_register_toolchai
 to the version you would like to use of Go.
 
 Next, we need a `BUILD.bazel` file in the root project directory.
+
+## Create the intial `deps.bzl` file
+
+In order for gazelle to run properly the first time, you may need to create a `deps.bzl` file in the root directory of
+your project.  Here is an example of the `deps.bzl` file:
+
+```python
+def go_dependencies():
+    pass
+```
+
+The above Starlark code defines the function that is reference in the `WORKSPACE` file. Below is a snippet
+of the `WORKSPACE` file:
+
+```python
+# gazelle:repository_macro deps.bzl%go_dependencies
+go_dependencies()
+```
+
+Once you run gazelle for the first time, if you have any external Go dependencies, gazelle will update the 
+`deps.bzl` file to include definitions of the external dependencies. The `deps.bzl` is not required but allows
+gazelle to store the projects external Go dependencies in a seperate file.  Otherwise all of the external Go dependencies
+are defined in the `WORKSPACE` file, and if you have a large project, you can have hundreds of extra
 
 ## Create the initial `BUILD.bazel` file
 
