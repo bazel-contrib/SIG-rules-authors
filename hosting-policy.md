@@ -29,7 +29,7 @@ We want the bazel-contrib org to be trusted, so it shouldn't fall into disrepair
 
 Criteria for accepting rule sets into this repo and avoid them from getting stale:
 
-1. Must use an open-source license, preferably [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
+1. Must use an [OSI-approved OSS license](https://opensource.org/licenses), preferably [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
 1. Must have wide applicability in the community.
 1. Must have a clear point of contact who answers questions from the SIG.
 1. Must be "production quality":
