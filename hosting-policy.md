@@ -40,6 +40,11 @@ Criteria for accepting rule sets into this repo and avoid them from getting stal
 1. Must reply to issues/PRs in 2-3 weeks (exact service level agreement TBD)
 1. Must have more than one person who is committed to review/approve PRs
     - We recommend encoding this as a `CODEOWNERS` file.
+1. Must publish guidance on the README about the support and maintenance commitment for example:
+    - Minimally maintained on a best-effort basis by volunteers in their spare time
+    - Maintained and supported by [Some Company]
+    - Funded by OpenCollective sponsorship on [link to open collective project]
+1. Must include guidance for contributors, see https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/setting-guidelines-for-repository-contributors
 1. Must publish semver releases.
     - Optional: follow the same release pattern as the rules-template does.
 1. Must work with LTS Bazel version
