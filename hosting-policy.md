@@ -95,7 +95,7 @@ They draw on the [CHAOSS Starter Project Health model](https://www.chaoss.commun
 
 #### Audit Outcome
 
-File an issue in the project's repository proposing archival, with justification and links to the relevant metric evidence, following the Archive Procedure below.
+File an issue in the SIG-rules-authors repository proposing archival, with justification and links to the relevant metric evidence, following the Archive Procedure below.
 
 ### Archive Procedure
 
