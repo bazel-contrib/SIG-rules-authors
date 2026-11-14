@@ -80,69 +80,22 @@ Archived projects will use GitHub’s “archived” status: code and past relea
 
 ### Audit Metrics
 
-An audit should record the date, data sources, observation periods, and gaps in coverage.
-Use the following signals to identify projects that need a discussion with their maintainers.
-The thresholds are review triggers, not automatic reasons to archive a repository.
-
-#### Maintenance and responsiveness
+These are review triggers, not automatic reasons to archive a repository.
+They draw on the [CHAOSS Starter Project Health model](https://www.chaoss.community/kb/metrics-model-starter-project-health/).
 
 | Signal | What to measure | When to investigate |
 | --- | --- | --- |
-| Unanswered contributions | Count and proportion of human issues and ready-for-review PRs with no maintainer response after 21 days. Include the oldest waiting item. | Repeated misses of the existing 2–3 week response expectation, especially for bug reports and proposed fixes. |
-| Maintainer's turn | Count issues and PRs where the next action belongs to a maintainer, and days since that action became pending. | Items waiting at least 90 days for triage, review, a merge decision, or a release. |
-| Incoming work and throughput | Over the last 90 days, count new human issues/PRs, closed issues, merged PRs, and PRs closed without merging separately. | A growing queue of actionable work with little maintainer response or resolution. |
-| Human maintenance | Dates of the last human code change on the default branch, review, and issue triage, and the number of active maintainers over the last 180 days. | No observed human maintenance for 180 days, or fewer than two people actively reviewing or maintaining the project. |
-| Releases | Date of the latest stable release, and merged fixes still awaiting release. For rulesets, check whether fixes reached the BCR. | Useful fixes remain unreleased for 90 days, or no stable release for 12 months despite unresolved maintenance needs. |
-| Compatibility and CI | Current CI/BCR results for supported Bazel LTS versions, and unresolved compatibility or security reports with links to proposed fixes. | Reproducible failures or security problems remain unaddressed, particularly when contributors have offered fixes. |
-
-Exclude bots and automated acknowledgments from human response counts; report bot work separately.
-A reply must come from someone other than the author; PR reviews and inline review comments count too.
-Identify maintainers from repository responsibilities and review permissions, confirmed with the project.
-Organization membership alone does not establish responsibility for a particular repository.
-
-Inspect the discussion before labeling an item "maintainer's turn".
-Exclude drafts and items waiting for information, author changes, or an external dependency from that queue.
-The last commenter alone does not establish whose turn it is.
-Report counts with their denominators and distinguish outside contributions from maintainers' own work.
-Include closed items when measuring response rates over a period, so the remaining open backlog does not bias the result.
-
-Recent pushes, dependency updates, or automated releases can hide a lack of human maintenance.
-Conversely, stable software may need few changes or releases.
-Evaluate these metrics against the project's stated support commitment and actual unresolved needs.
-
-#### Usage
-
-Record usage per calendar month, preferably for the last 12 complete months.
-Compare the latest three complete months with the preceding three to identify trends.
-Use consistent sources and coverage for those comparisons, and flag any changes in collection.
-Use the best available source for each project: BCR fetch counts, instrumented artifact downloads,
-GitHub release-asset downloads, or repository traffic.
-Also check known downstream users and whether a supported replacement exists.
-
-- State exactly what is counted: registry metadata requests, artifact downloads, clones, or views.
-  These are different measures; do not add them together or describe them as unique users.
-- Record which modules, versions, artifacts, and mirrors are covered, and any known effects from CI, bots, and caches.
-  Exclude checksums, signatures, attestations, and documentation assets from software download counts.
-- Derive monthly release-asset downloads from differences between cumulative snapshots at month boundaries.
-  A single lifetime download count divided by a project's age is not evidence of current monthly usage.
-- If only a shorter interval is available, report its dates and estimate a monthly rate as
-  `observed count / observed days * 30.44`, clearly labeled as an estimate.
-- Mark unavailable data as unknown, not zero. Stars and forks provide context but do not establish active usage.
-
-There is no universal download threshold for archiving: a small tool and a widely shared ruleset have different audiences.
-Sustained low or declining measured usage is a reason to ask whether the project is still needed.
-Missing telemetry is not evidence that a project has no users.
+| Unanswered contributions | Count and proportion of human issues and ready-for-review PRs without a maintainer response after 21 days. | Repeated misses of the existing 2–3 week response expectation, especially for bug reports and proposed fixes. |
+| Maintainer's turn | Count and age of issues/PRs awaiting maintainer triage, review, a merge decision, or a release. Exclude drafts and items waiting on the author or an external dependency. | Items waiting at least 90 days. |
+| Incoming work and throughput | New human issues/PRs, closed issues, merged PRs, and PRs closed without merging over the last 90 days. | A growing queue of actionable work with little response or resolution. |
+| Human maintenance | Last human code change, review, or issue triage; number of active maintainers over the last 180 days. | No human maintenance for 180 days, or fewer than two active maintainers. |
+| Releases | Latest stable release, and merged fixes still awaiting release or BCR publication. | Useful fixes unreleased for 90 days, or no stable release for 12 months despite unresolved maintenance needs. |
+| Compatibility and CI | CI/BCR results for supported Bazel LTS versions; unresolved compatibility and security reports. | Reproducible failures or security problems remain unaddressed, particularly when contributors have offered fixes. |
+| Usage | Monthly downloads or BCR fetches over the last 12 complete months, and known downstream users. | Sustained low or declining usage, especially when a supported replacement exists. Unavailable usage data is not evidence of no users. |
 
 #### Audit Outcome
 
-Publish a ranked list of candidates with linked evidence, measurement dates, usage coverage, and reasons for each recommendation.
-Give priority to projects with multiple maintenance failures or confirmed retirement and little evidence of continued need.
-For projects with ongoing demand, seek additional maintainers, a transfer, or a supported migration path.
-Record contrary evidence and uncertainty, including known users and potential new maintainers.
-Audit findings inform the Archive Procedure below; they do not replace maintainer consultation, community discussion, or the SIG vote.
-
-These signals draw on the [CHAOSS Starter Project Health model](https://www.chaoss.community/kb/metrics-model-starter-project-health/),
-including response time, contribution throughput, contributor concentration, and release frequency.
+File an issue in the project's repository proposing archival, with justification and links to the relevant metric evidence, following the Archive Procedure below.
 
 ### Archive Procedure
 
