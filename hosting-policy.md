@@ -78,6 +78,25 @@ More often, we expect that this procedure will begin as a reaction to some user 
 
 Archived projects will use GitHub’s “archived” status: code and past releases will still be available.
 
+### Audit Metrics
+
+These are review triggers, not automatic reasons to archive a repository.
+They draw on the [CHAOSS Starter Project Health model](https://www.chaoss.community/kb/metrics-model-starter-project-health/).
+
+| Signal | What to measure | When to investigate |
+| --- | --- | --- |
+| Unanswered contributions | Count and proportion of human issues and ready-for-review PRs without a maintainer response after 21 days. | Repeated misses of the existing 2–3 week response expectation, especially for bug reports and proposed fixes. |
+| Maintainer's turn | Count and age of issues/PRs awaiting maintainer triage, review, a merge decision, or a release. Exclude drafts and items waiting on the author or an external dependency. | Items waiting at least 90 days. |
+| Incoming work and throughput | New human issues/PRs, closed issues, merged PRs, and PRs closed without merging over the last 90 days. | A growing queue of actionable work with little response or resolution. |
+| Human maintenance | Last human code change, review, or issue triage; number of active maintainers over the last 180 days. | No human maintenance for 180 days, or fewer than two active maintainers. |
+| Releases | Latest stable release, and merged fixes still awaiting release or BCR publication. | Useful fixes unreleased for 90 days, or no stable release for 12 months despite unresolved maintenance needs. |
+| Compatibility and CI | CI/BCR results for supported Bazel LTS versions; unresolved compatibility and security reports. | Reproducible failures or security problems remain unaddressed, particularly when contributors have offered fixes. |
+| Usage | Monthly downloads or BCR fetches over the last 12 complete months, and known downstream users. | Sustained low or declining usage, especially when a supported replacement exists. Unavailable usage data is not evidence of no users. |
+
+#### Audit Outcome
+
+File an issue in the SIG-rules-authors repository proposing archival, with justification and links to the relevant metric evidence, following the Archive Procedure below.
+
 ### Archive Procedure
 
 To archive a project:
